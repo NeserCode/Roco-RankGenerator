@@ -11,7 +11,6 @@ module.exports = defineConfig({
   pluginOptions: {
     electronBuilder: {
       nodeIntegration: true,
-      enableRemoteModule: true,
       builderOptions: {}
     }
   }

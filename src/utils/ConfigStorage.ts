@@ -5,14 +5,15 @@ import { defaultConfigOptions } from "@/shared/defaultConfigOptions"
 
 import type { Config } from "@/shared/types"
 
+const { app } = remote
+
 class configStorage {
 	private Config: Config = this.getConfig()
-	private ConfigPath: string = remote.app.getPath("userData") + "/config.json"
+	private ConfigPath: string = this.initialPath()
 
-	/**
-	 * getConfig
-	 */
 	public getConfig(): Config {
+		this.initialPath()
+
 		fs.readFile(this.ConfigPath, (err, data: { toString: () => string }) => {
 			if (err) {
 				this.initialConfig()
@@ -39,6 +40,11 @@ class configStorage {
 		fs.writeFile(this.ConfigPath, JSON.stringify(config), (err) => {
 			if (err) throw err
 		})
+	}
+
+	private initialPath(): string {
+		this.ConfigPath = app.getPath("userData") + "/config.json"
+		return this.ConfigPath
 	}
 }
 

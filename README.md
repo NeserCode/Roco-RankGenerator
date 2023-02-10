@@ -1,2 +1,3 @@
-# Roco-RankGenerator
- For Roco Rank.
+# roco-temp
+
+A application for Roco Rank.

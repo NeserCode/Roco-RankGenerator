@@ -13,14 +13,12 @@ class configStorage {
 
 	public getConfig(): Config {
 		this.initialPath()
-
-		fs.readFile(this.ConfigPath, (err, data: { toString: () => string }) => {
-			if (err) {
-				this.initialConfig()
-				throw err
-			}
-			this.Config = JSON.parse(data.toString())
-		})
+		try {
+			this.Config = JSON.parse(fs.readFileSync(this.ConfigPath, "utf8"))
+		} catch (error) {
+			console.log(error)
+			this.initialConfig()
+		}
 
 		return this.Config
 	}
@@ -37,6 +35,8 @@ class configStorage {
 
 	public setConfig(config: Config): void {
 		this.Config = config
+		console.log(this.Config)
+
 		fs.writeFile(this.ConfigPath, JSON.stringify(config), (err) => {
 			if (err) throw err
 		})

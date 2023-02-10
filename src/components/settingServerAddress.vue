@@ -24,8 +24,7 @@ const { boundValue } = inject(SettingOptionToken, {})
 
 <style lang="postcss" scoped>
 .setting-server-address {
-	@apply inline-flex flex-col justify-center items-center w-full py-4
-  bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200;
+	@apply inline-flex flex-col justify-center items-center w-full py-4;
 }
 
 /* input style */

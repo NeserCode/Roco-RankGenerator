@@ -28,7 +28,7 @@ onMounted(() => {
 
 <style lang="postcss" scoped>
 nav.app-container {
-	@apply inline-flex justify-center items-center w-full py-4
+	@apply inline-flex justify-center items-center w-full h-full py-4
 	bg-gray-50 dark:bg-gray-700 border-b;
 }
 
@@ -66,7 +66,14 @@ button.view-btn:focus {
 
 html,
 body {
-	@apply font-thin;
+	@apply max-h-full m-0 p-0;
 	font-family: "HYWH";
+}
+
+.home,
+.setting {
+	max-height: 488px;
+	padding-top: 244px;
+	overflow-y: auto;
 }
 </style>

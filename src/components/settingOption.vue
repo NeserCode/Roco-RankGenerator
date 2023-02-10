@@ -2,10 +2,10 @@
 import { SettingOptionToken } from "@/tokens/settingOption"
 import { defineProps, reactive, provide } from "vue"
 
-import type { ServerInfo } from "@/shared/types"
+import type { BoundType } from "@/shared/types"
 
 const props = defineProps<{
-	boundValue: ServerInfo
+	boundValue: BoundType
 }>()
 
 provide(SettingOptionToken, reactive({ ...props }))
@@ -17,4 +17,8 @@ provide(SettingOptionToken, reactive({ ...props }))
 	</div>
 </template>
 
-<style lang="postcss" scoped></style>
+<style lang="postcss" scoped>
+.setting-option {
+	@apply inline-flex flex-col justify-center items-center w-full py-4;
+}
+</style>

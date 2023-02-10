@@ -49,13 +49,8 @@ async function createWindow() {
 	// Menu bar
 	const template = [
 		{
-			label: "Application",
+			label: "应用",
 			submenu: [
-				{
-					label: "About Application",
-					selector: "orderFrontStandardAboutPanel:",
-				},
-				{ type: "separator" },
 				{
 					label: "重新加载",
 					click: function () {
@@ -63,7 +58,7 @@ async function createWindow() {
 					},
 				},
 				{
-					label: "Quit",
+					label: "退出",
 					click: function () {
 						app.quit()
 					},
@@ -71,10 +66,9 @@ async function createWindow() {
 			],
 		},
 		{
-			label: "Options",
+			label: "其他",
 			submenu: [
-				{ label: "Undo", accelerator: "CmdOrCtrl+Z", selector: "undo:" },
-				{ type: "separator" },
+				// { type: "separator" },
 				{
 					label: "切换夜间模式",
 					click: () => {

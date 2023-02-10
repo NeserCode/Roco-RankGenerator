@@ -3,4 +3,10 @@ export interface ServerInfo {
 	port: string
 }
 
-export type Config = ServerInfo
+export type Nickname = {
+	nickname: string
+}
+
+export type Config = ServerInfo & Nickname
+
+export type BoundType = ServerInfo | Nickname

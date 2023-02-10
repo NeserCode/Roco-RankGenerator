@@ -60,7 +60,7 @@ const { boundValue } = inject(SettingOptionToken, {})
 
 /* select style */
 .setting-roco-rank-level select {
-	@apply w-36 py-0.5 px-1 text-center border-2 border-gray-300 bg-gray-200
+	@apply w-32 py-0.5 px-1 text-center border-2 border-gray-300 bg-gray-200
   dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200
   rounded text-gray-700 font-medium
   transition-all duration-300 ease-in-out select-none;

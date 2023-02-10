@@ -1,30 +1,72 @@
+<script setup lang="ts">
+import { initialDarkMode, toggleDarkMode } from "@/utils/DarkMode"
+import { ipcRenderer } from "electron"
+
+import { onMounted } from "vue"
+
+// listen to the dark mode change event
+ipcRenderer.on("dark-mode", () => {
+	toggleDarkMode()
+})
+
+onMounted(() => {
+	initialDarkMode()
+})
+</script>
+
 <template>
-  <nav>
-    <router-link to="/">Home</router-link> |
-    <router-link to="/about">About</router-link>
-  </nav>
-  <router-view/>
+	<nav class="app-container">
+		<button class="view-btn">
+			<router-link to="/">首页</router-link>
+		</button>
+		<button class="view-btn">
+			<router-link to="/setting">设置</router-link>
+		</button>
+	</nav>
+	<router-view />
 </template>
 
-<style>
-#app {
-  font-family: Avenir, Helvetica, Arial, sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-  text-align: center;
-  color: #2c3e50;
+<style lang="postcss" scoped>
+nav.app-container {
+	@apply inline-flex justify-center items-center w-full py-4
+	bg-gray-50 dark:bg-gray-700 border-b;
 }
 
-nav {
-  padding: 30px;
+button.view-btn {
+	@apply inline-flex justify-center items-center py-0 px-3 mx-2
+  border-2 border-gray-300 bg-gray-200 hover:bg-gray-300
+	dark:border-gray-600 dark:bg-gray-800 dark:hover:bg-gray-700 dark:text-gray-200
+  rounded text-gray-700 font-medium
+  transition-all duration-300 ease-in-out select-none;
 }
 
-nav a {
-  font-weight: bold;
-  color: #2c3e50;
+button.view-btn:active {
+	@apply bg-gray-400;
 }
 
-nav a.router-link-exact-active {
-  color: #42b983;
+button.view-btn:focus {
+	@apply outline-none;
+}
+
+.view-btn a {
+	@apply border-b-2 border-transparent;
+	-webkit-user-drag: none;
+}
+
+.view-btn a.router-link-exact-active {
+	@apply border-gray-700 dark:border-gray-300;
+}
+</style>
+
+<style lang="postcss">
+@font-face {
+	font-family: "HYWH";
+	src: url("./assets/HYWenHei-75W.ttf");
+}
+
+html,
+body {
+	@apply font-thin;
+	font-family: "HYWH";
 }
 </style>

@@ -19,6 +19,6 @@ provide(SettingOptionToken, reactive({ ...props }))
 
 <style lang="postcss" scoped>
 .setting-option {
-	@apply inline-flex flex-col justify-center items-center w-full py-4;
+	@apply inline-flex flex-col justify-center items-center w-full pb-4;
 }
 </style>

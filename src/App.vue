@@ -15,21 +15,27 @@ onMounted(() => {
 </script>
 
 <template>
-	<nav class="app-container">
-		<button class="view-btn">
-			<router-link to="/">首页</router-link>
-		</button>
-		<button class="view-btn">
-			<router-link to="/setting">设置</router-link>
-		</button>
-	</nav>
-	<router-view />
+	<div class="app-container">
+		<nav class="link-container">
+			<button class="view-btn">
+				<router-link to="/">首页</router-link>
+			</button>
+			<button class="view-btn">
+				<router-link to="/setting">设置</router-link>
+			</button>
+		</nav>
+		<router-view />
+	</div>
 </template>
 
 <style lang="postcss" scoped>
-nav.app-container {
-	@apply inline-flex justify-center items-center w-full h-full py-4
-	bg-gray-50 dark:bg-gray-700 border-b;
+.app-container {
+	@apply flex flex-col justify-center items-center w-full h-[551px];
+}
+nav.link-container {
+	@apply fixed top-0 inline-flex justify-center items-center w-full py-4
+	bg-gray-50 dark:bg-gray-700 border-b-2 border-gray-300 dark:border-slate-800
+	shadow-md;
 }
 
 button.view-btn {
@@ -72,8 +78,10 @@ body {
 
 .home,
 .setting {
-	max-height: 488px;
-	padding-top: 244px;
-	overflow-y: auto;
+	@apply overflow-y-auto overflow-x-hidden mt-[63px];
+}
+
+html.dark {
+	color-scheme: dark;
 }
 </style>

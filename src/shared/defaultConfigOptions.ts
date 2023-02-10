@@ -5,4 +5,7 @@ export const defaultConfigOptions: Config = {
 	server: "127.0.0.1",
 	port: "8888",
 	nickname: "Roco",
+	rank: 0,
+	level: 0,
+	star: 0,
 }

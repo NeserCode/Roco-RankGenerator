@@ -32,12 +32,12 @@ const { boundValue } = inject(SettingOptionToken, {})
 	@apply w-full px-1 py-0.5 border-2 border-gray-300 bg-gray-200
   dark:border-gray-600 dark:bg-gray-800 dark:text-gray-400
   rounded text-gray-500 font-medium outline-none
-  transition-all duration-300 ease-in-out select-none;
+  transition-all duration-300 ease-in-out;
 }
 
 /* label style */
 .setting-server-address .server-address-label,
 .setting-server-address .server-port-label {
-	@apply w-full py-0.5;
+	@apply w-full py-0.5 select-none;
 }
 </style>

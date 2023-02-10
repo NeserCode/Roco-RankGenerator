@@ -2,10 +2,11 @@
 import SettingOption from "@/components/settingOption.vue"
 import SettingServerAddress from "@/components/settingServerAddress.vue"
 import SettingNickname from "@/components/settingNickname.vue"
+import SettingRankLevel from "@/components/settingRankLevel.vue"
 import { configStorager } from "@/utils/ConfigStorage"
 import { watch, ref } from "vue"
 
-import type { ServerInfo, Nickname, Config } from "@/shared/types"
+import type { ServerInfo, Nickname, RankLevel, Config } from "@/shared/types"
 
 function getServerInfo(): ServerInfo {
 	return {
@@ -57,11 +58,33 @@ watch(
 	{ deep: true }
 )
 
+function getRankLevel(): RankLevel {
+	return {
+		rank: configStorager.getConfig().rank,
+		level: configStorager.getConfig().level,
+		star: configStorager.getConfig().star,
+	}
+}
+
+const rankLevel = ref<RankLevel>(getRankLevel())
+
+watch(
+	rankLevel,
+	(newVal) => {
+		const config: Config = configStorager.getConfig()
+		config.rank = newVal.rank
+		config.level = newVal.level
+		config.star = newVal.star
+		configStorager.setConfig(config)
+	},
+	{ deep: true }
+)
+
 const tips = [
-	"服务器地址为 IPv4 地址 --一条建议：可以使用 ipconfig 命令获取本机 IPv4 地址",
-	"端口为 0-65535 之间的整数 --一条建议：可以使用 netstat 命令获取本机端口",
-	"服务器地址和端口不可为空",
-	"服务器地址和端口不可重复",
+	`本应用只在填入参数合法时才会保存参数\n例如服务器地址为"256.1.1.1"则不会触发保存`,
+	"端口为 0-65535 之间的整数\n通常来说，服务器地址与端口这些信息将由服务端提供",
+	"快捷键提示Tips\n",
+	"",
 ]
 </script>
 
@@ -73,9 +96,9 @@ const tips = [
 		<setting-option :bound-value="nickname">
 			<setting-nickname />
 		</setting-option>
-		<div class="tip-container">
-			<span class="tip" v-for="item of tips" :key="item">{{ item }}</span>
-		</div>
+		<setting-option :bound-value="rankLevel">
+			<setting-rank-level />
+		</setting-option>
 		<div class="tip-container">
 			<span class="tip" v-for="item of tips" :key="item">{{ item }}</span>
 		</div>
@@ -84,19 +107,19 @@ const tips = [
 
 <style scoped lang="postcss">
 .setting {
-	@apply inline-flex flex-col justify-center items-center w-full
+	@apply inline-flex flex-col items-center w-full py-4
 	bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200
 	overscroll-y-auto;
 }
 
 .tip-container {
-	@apply inline-flex flex-col justify-center w-60 pb-4
+	@apply inline-flex flex-col items-center w-72
 	bg-gray-100 dark:bg-gray-600 border-2 border-gray-200 dark:border-gray-600
 	transition-all;
 }
 
 .tip {
-	@apply w-full py-1 px-2 text-sm select-none;
+	@apply w-full py-1 px-2 text-sm select-none whitespace-pre-line;
 }
 
 .tip:nth-child(odd) {

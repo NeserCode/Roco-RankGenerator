@@ -83,7 +83,7 @@ async function createWindow() {
 			],
 		},
 	]
-
+	// @ts-ignore
 	Menu.setApplicationMenu(Menu.buildFromTemplate(template))
 }
 

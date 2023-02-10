@@ -1,9 +1,10 @@
 <script setup lang="ts">
 import SettingOption from "@/components/settingOption.vue"
 import SettingServerAddress from "@/components/settingServerAddress.vue"
+import { configStorager } from "@/utils/ConfigStorage"
 import { watch, ref } from "vue"
 
-import type { ServerInfo } from "@/shared/types"
+import type { ServerInfo, Config } from "@/shared/types"
 
 const serverInfo = ref<ServerInfo>({
 	server: "127.0.0.1",
@@ -13,8 +14,10 @@ const serverInfo = ref<ServerInfo>({
 watch(
 	serverInfo,
 	(newVal, oldVal) => {
-		console.log("newVal:", newVal)
-		console.log("oldVal:", oldVal)
+		const config: Config = configStorager.getConfig()
+		config.server = newVal.server
+		config.port = newVal.port
+		configStorager.setConfig(config)
 	},
 	{ deep: true }
 )

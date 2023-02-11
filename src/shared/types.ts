@@ -12,15 +12,15 @@ export type Nickname = {
 }
 
 export type RankLevel = {
-	rank: number
-	level: number
-	star: number
+	rank: 0 | 1 | 2 | 3 | 4 | 5
+	level: 0 | 1 | 2 | 3 | 4
+	star: 0 | 1 | 2 | 3 | 4
 }
 
 export type RankLimit = {
-	Rank: number
-	Level: number
-	Star: number
+	Rank: 0 | 1 | 2 | 3 | 4 | 5
+	Level: 0 | 1 | 2 | 3 | 4
+	Star: 0 | 1 | 2 | 3 | 4
 }
 
 export interface Ws_BasicInfoPackage {
@@ -44,6 +44,7 @@ export interface Ws_TimePackage extends Ws_BasicInfoPackage {
 }
 
 export interface Ws_RankPackage extends Ws_BasicInfoPackage {
+	type: "RANK"
 	nickname: string
 	rank: 0 | 1 | 2 | 3 | 4 | 5
 	level: 0 | 1 | 2 | 3 | 4

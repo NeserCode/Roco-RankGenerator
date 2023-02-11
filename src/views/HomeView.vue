@@ -8,21 +8,51 @@ import { $Bus } from "@/utils/Mitt"
 import { ref, onUnmounted } from "vue"
 import { useStore } from "vuex"
 
+import type { Ws_RankPackage } from "@/shared/types"
+
 const $store = useStore()
 const config = configStorager.getConfig()
 const wsUrl = new URL(`ws://${config.server}:${config.port}/base`)
+
+function getUserInfo(): Ws_RankPackage {
+	let config2 = configStorager.getConfig()
+	return {
+		id: config2.id,
+		type: "RANK",
+		nickname: config2.nickname,
+		rank: config2.rank,
+		level: config2.level,
+		star: config2.star,
+		timestamp: Date.now(),
+	}
+}
+
 const wsProxy = ref<WebSocketProxy>(
 	new WebSocketProxy(wsUrl, (message) => {
 		if (message.data !== "Heartbeat") {
 			const data = JSON.parse(message.data)
-			if (
-				data.type === ("HOST" || "JOIN") &&
-				!$store.state.isJoiningRoom &&
-				data.id === config.id
-			) {
-				console.log("Join room success")
-				$store.commit("ensureJoinedRoom")
-			} else console.log(data)
+
+			// Join room
+			if (data.type === ("HOST" || "JOIN")) {
+				// self join room
+				if (data.id === config.id && !$store.state.isJoiningRoom) {
+					console.log("Join room success")
+					$store.commit("ensureJoinedRoom")
+					// send user info
+					wsProxy.value.send(JSON.stringify(getUserInfo()))
+				}
+				// other user join room
+				else if (data.id !== config.id && $store.state.isJoiningRoom) {
+					console.log("Other user join room")
+					$store.commit("ensureJoinedRoom")
+				}
+			}
+			// update room player list
+			else if (data.type === "RANK") {
+				$store.commit("updateRoomPlayerList", data)
+			}
+			// otherwise
+			else console.log(data)
 		}
 	})
 )

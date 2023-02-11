@@ -5,10 +5,13 @@ import SettingNickname from "@/components/settingNickname.vue"
 import SettingRankLevel from "@/components/settingRankLevel.vue"
 import { configStorager } from "@/utils/ConfigStorage"
 import { watch, ref } from "vue"
+import { useStore } from "vuex"
 
 import { createHmac } from "crypto"
 
 import type { ServerInfo, Nickname, RankLevel, Config } from "@/shared/types"
+
+const $store = useStore()
 
 function getServerInfo(): ServerInfo {
 	return {
@@ -59,6 +62,11 @@ watch(
 			.update(new Date().toString())
 			.digest("hex")
 		configStorager.setConfig(config)
+		// update user info
+		$store.commit("updateUserNickname", {
+			id: config.id,
+			nickname: config.nickname,
+		})
 	},
 	{ deep: true }
 )

@@ -35,7 +35,7 @@ async function createWindow() {
 	}
 
 	globalShortcut.register("CommandOrControl+E", () => {
-		if (isDevelopment && win.isFocused()) {
+		if (win.isFocused()) {
 			win.webContents.openDevTools()
 		} else win.webContents.closeDevTools()
 	})

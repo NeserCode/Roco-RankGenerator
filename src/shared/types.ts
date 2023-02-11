@@ -3,6 +3,10 @@ export interface ServerInfo {
 	port: string
 }
 
+export type Id = {
+	id: string
+}
+
 export type Nickname = {
 	nickname: string
 }
@@ -19,6 +23,33 @@ export type RankLimit = {
 	Star: number
 }
 
-export type Config = ServerInfo & Nickname & RankLevel
+export interface Ws_BasicInfoPackage {
+	id: string
+	timestamp: number
+}
 
-export type BoundType = ServerInfo | Nickname
+export interface Ws_JoinPackage extends Ws_BasicInfoPackage {
+	type: "JOIN" | "HOST"
+	hostKey?: string
+}
+
+export interface Ws_NormalPackage extends Ws_BasicInfoPackage {
+	type: ""
+}
+
+export interface Ws_TimePackage extends Ws_BasicInfoPackage {
+	type: "BEFORE_START" | "BEFORE_ROUND" | "ROUNDDOWN"
+	timeCount: number
+	canPause?: boolean
+}
+
+export interface Ws_RankPackage extends Ws_BasicInfoPackage {
+	nickname: string
+	rank: 0 | 1 | 2 | 3 | 4 | 5
+	level: 0 | 1 | 2 | 3 | 4
+	star: 0 | 1 | 2 | 3 | 4
+}
+
+export type Config = ServerInfo & Nickname & RankLevel & Id
+
+export type BoundType = ServerInfo | Nickname | RankLevel

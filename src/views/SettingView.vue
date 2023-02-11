@@ -6,6 +6,8 @@ import SettingRankLevel from "@/components/settingRankLevel.vue"
 import { configStorager } from "@/utils/ConfigStorage"
 import { watch, ref } from "vue"
 
+import { createHmac } from "crypto"
+
 import type { ServerInfo, Nickname, RankLevel, Config } from "@/shared/types"
 
 function getServerInfo(): ServerInfo {
@@ -53,6 +55,9 @@ watch(
 	(newVal) => {
 		const config: Config = configStorager.getConfig()
 		config.nickname = newVal.nickname
+		config.id = createHmac("sha256", newVal.nickname)
+			.update(new Date().toString())
+			.digest("hex")
 		configStorager.setConfig(config)
 	},
 	{ deep: true }
@@ -108,8 +113,7 @@ const tips = [
 <style scoped lang="postcss">
 .setting {
 	@apply inline-flex flex-col items-center w-full py-4
-	bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200
-	overscroll-y-auto;
+	bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200;
 }
 
 .tip-container {

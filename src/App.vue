@@ -24,7 +24,14 @@ onMounted(() => {
 				<router-link to="/setting">设置</router-link>
 			</button>
 		</nav>
-		<router-view />
+
+		<router-view v-slot="{ Component }">
+			<keep-alive>
+				<Transition name="slide" mode="out-in">
+					<component :is="Component" />
+				</Transition>
+			</keep-alive>
+		</router-view>
 	</div>
 </template>
 
@@ -72,7 +79,7 @@ button.view-btn:focus {
 
 html,
 body {
-	@apply max-h-full m-0 p-0;
+	@apply max-h-full m-0 p-0 overflow-x-hidden;
 	font-family: "HYWH";
 }
 
@@ -83,5 +90,16 @@ body {
 
 html.dark {
 	color-scheme: dark;
+}
+
+/* Tranistion like vuepress2 */
+.slide-enter-active,
+.slide-leave-active {
+	transition: all 0.2s ease-in-out;
+}
+
+.slide-enter,
+.slide-leave-to {
+	opacity: 0;
 }
 </style>

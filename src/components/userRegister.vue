@@ -6,10 +6,11 @@ import { $Bus } from "@/utils/Mitt"
 import { debounce } from "ts-debounce"
 import { ref, onActivated } from "vue"
 import { useRouter } from "vue-router"
+import { useStore } from "vuex"
 
 const config = ref<Config>(configStorager.getConfig())
 const $router = useRouter()
-
+const $store = useStore()
 onActivated(() => {
 	config.value = configStorager.getConfig()
 })
@@ -20,7 +21,7 @@ function gotoSetting() {
 
 const JoinTheRoom = debounce(() => {
 	$Bus.emit("request-join-room", {
-		id: config.value.nickname,
+		id: config.value.id,
 		type: "HOST",
 		timestamp: Date.now(),
 		hostKey: key.value,
@@ -74,7 +75,13 @@ const key = ref<string>(randomKey())
 
 			<div class="operation">
 				<button class="btn btn-primary" @click="gotoSetting">修改信息</button>
-				<button class="btn btn-primary" @click="JoinTheRoom">加入房间</button>
+				<button
+					class="btn btn-primary"
+					@click="JoinTheRoom"
+					:disabled="$store.state.isJoinedRoom"
+				>
+					加入房间
+				</button>
 			</div>
 		</div>
 	</div>
@@ -126,5 +133,10 @@ input {
   dark:border-gray-600 dark:bg-gray-800 dark:text-gray-200
   rounded text-gray-700
   transition-all duration-300 ease-in-out select-none;
+}
+
+/* disabled style */
+.operation button:disabled {
+	@apply bg-gray-300 dark:bg-gray-700 cursor-not-allowed;
 }
 </style>

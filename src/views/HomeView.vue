@@ -8,7 +8,7 @@ import { $Bus } from "@/utils/Mitt"
 import { ref, onUnmounted } from "vue"
 import { useStore } from "vuex"
 
-const { state } = useStore()
+const $store = useStore()
 const config = configStorager.getConfig()
 const wsUrl = new URL(`ws://${config.server}:${config.port}/base`)
 const wsProxy = ref<WebSocketProxy>(
@@ -17,11 +17,12 @@ const wsProxy = ref<WebSocketProxy>(
 			const data = JSON.parse(message.data)
 			if (
 				data.type === ("HOST" || "JOIN") &&
-				!state.isJoiningRoom &&
+				!$store.state.isJoiningRoom &&
 				data.id === config.id
 			) {
 				console.log("Join room success")
-			}
+				$store.commit("ensureJoinedRoom")
+			} else console.log(data)
 		}
 	})
 )
@@ -38,7 +39,7 @@ onUnmounted(() => {
 
 <template>
 	<div class="home">
-		<user-room />
+		<user-room v-if="$store.state.isJoinedRoom" />
 		<user-register />
 	</div>
 </template>

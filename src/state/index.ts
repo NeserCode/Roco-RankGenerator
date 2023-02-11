@@ -1,4 +1,6 @@
 import { createStore } from "vuex"
+
+import type { RankLevel } from "@/shared/types"
 /**
  * 创建仓库和导出
  */
@@ -14,6 +16,11 @@ export default createStore({
 			level: 0,
 			star: 0,
 		},
+		room: {
+			id: "",
+			players: [],
+			ownerId: "",
+		},
 	},
 	mutations: {
 		ensureJoinedRoom(state) {
@@ -28,6 +35,11 @@ export default createStore({
 		},
 		ensureUnhost(state) {
 			state.isHost = false
+		},
+		updateUserRank(state, rank: RankLevel) {
+			state.user.rank = rank.rank
+			state.user.level = rank.level
+			state.user.star = rank.star
 		},
 	},
 })

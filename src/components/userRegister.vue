@@ -71,7 +71,11 @@ const key = ref(localStorage.getItem("roco.host.key") || "")
 					房间密钥
 					<label title="决定是否成为房主">[可选]</label>
 				</div>
-				<input type="text" v-model="key" />
+				<input
+					type="text"
+					v-model="key"
+					:disabled="$store.state.isJoinedRoom"
+				/>
 			</div>
 
 			<div class="operation">
@@ -137,7 +141,10 @@ input {
 }
 
 /* disabled style */
-.operation button:disabled {
+button:disabled {
+	@apply bg-gray-300 dark:bg-gray-700 cursor-not-allowed;
+}
+input:disabled {
 	@apply bg-gray-300 dark:bg-gray-700 cursor-not-allowed;
 }
 </style>

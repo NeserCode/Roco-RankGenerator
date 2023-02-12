@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { SettingOptionToken } from "@/tokens/settingOption"
 import { inject } from "vue"
+import { useStore } from "vuex"
 
 const { boundValue } = inject(SettingOptionToken, {})
+const $store = useStore()
 </script>
 
 <template>
@@ -10,7 +12,12 @@ const { boundValue } = inject(SettingOptionToken, {})
 		<div class="roco-nickname">
 			<div class="roco-nickname-label">昵称</div>
 			<div class="roco-nickname-input">
-				<input type="text" v-model="boundValue.nickname" spellcheck="false" />
+				<input
+					type="text"
+					v-model="boundValue.nickname"
+					spellcheck="false"
+					:disabled="$store.state.isJoinedRoom"
+				/>
 			</div>
 		</div>
 	</div>
@@ -27,5 +34,9 @@ const { boundValue } = inject(SettingOptionToken, {})
 /* label style */
 .setting-roco-nickname .roco-nickname-label {
 	@apply w-full py-0.5 select-none;
+}
+
+input:disabled {
+	@apply bg-gray-300 dark:bg-gray-700 cursor-not-allowed;
 }
 </style>

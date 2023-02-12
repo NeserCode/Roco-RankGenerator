@@ -47,6 +47,10 @@ const wsProxy = ref<WebSocketProxy>(
 					$store.commit("ensureJoinedRoom")
 				}
 			}
+			// Host Room ID
+			else if (data.type === "HOST_ID") {
+				$store.commit("updateRoomId", data.hostId)
+			}
 			// update room player list
 			else if (data.type === "RANK") {
 				// $store.commit("updateRoomPlayers", data)

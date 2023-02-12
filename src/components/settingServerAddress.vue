@@ -1,8 +1,10 @@
 <script lang="ts" setup>
 import { SettingOptionToken } from "@/tokens/settingOption"
 import { inject } from "vue"
+import { useStore } from "vuex"
 
 const { boundValue } = inject(SettingOptionToken, {})
+const $store = useStore()
 </script>
 
 <template>
@@ -10,13 +12,21 @@ const { boundValue } = inject(SettingOptionToken, {})
 		<div class="server-address">
 			<div class="server-address-label">服务器地址</div>
 			<div class="server-address-input">
-				<input type="text" v-model="boundValue.server" />
+				<input
+					type="text"
+					v-model="boundValue.server"
+					:disabled="$store.state.isJoinedRoom"
+				/>
 			</div>
 		</div>
 		<div class="server-port">
 			<div class="server-port-label">端口</div>
 			<div class="server-port-input">
-				<input type="text" v-model="boundValue.port" />
+				<input
+					type="text"
+					v-model="boundValue.port"
+					:disabled="$store.state.isJoinedRoom"
+				/>
 			</div>
 		</div>
 	</div>
@@ -39,5 +49,9 @@ const { boundValue } = inject(SettingOptionToken, {})
 .setting-server-address .server-address-label,
 .setting-server-address .server-port-label {
 	@apply w-full py-0.5 select-none;
+}
+
+input:disabled {
+	@apply bg-gray-300 dark:bg-gray-700 cursor-not-allowed;
 }
 </style>

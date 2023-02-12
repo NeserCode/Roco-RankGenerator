@@ -41,6 +41,9 @@ export default createStore({
 		ensureUnhost(state) {
 			state.isHost = false
 		},
+		updateRoomId(state, id: string) {
+			state.room.id = id
+		},
 		updateUserNickname(state, { id, nickname }) {
 			state.user.id = id
 			state.user.nickname = nickname

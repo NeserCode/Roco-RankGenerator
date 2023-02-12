@@ -1,7 +1,11 @@
 import { WebSocketServer } from 'ws'
+import { createHmac } from 'crypto'
 
 const port = 2333
 const Socket = new WebSocketServer({ port, clientTracking: true })
+const HOST_KEY = createHmac('sha256', 'NeserCode.Roco').digest('hex')
+
+let HOST_ID = null
 
 Socket.on('close', (e) => {
 	console.log(`[WebSocket Closed] ${e}`);
@@ -12,24 +16,42 @@ Socket.on('error', (e) => {
 })
 
 Socket.on('connection', (socket) => {
+
 	socket.on('message', (message) => {
+
 		console.log(`[WebSocket Reboardcast Start]`);
+
+		let JsonMessage = JSON.parse(message)
+		if (JsonMessage.hostKey === HOST_KEY && HOST_ID === null) {
+			HOST_ID = JsonMessage.id
+			console.log(`[WebSocket Host] ${HOST_ID}`);
+		}
+
 		let index = 0
 		Socket.clients.forEach((c) => {
 			c.send(String(message))
 			console.log(`[Reboardcast User $${++index}]`);
 		});
+
 		console.log(`[WebSocket Reboardcast End] Total Client: ${index}`);
+
 		Socket.clients.forEach((c) => {
 			c.send(JSON.stringify({
+				timstamp: Date.now(),
 				client: index
 			}))
 		});
+
 		console.log(`[WebSocket Sent Clients Number]`);
 	})
 
 	setInterval(() => {
 		socket.send('Heartbeat')
+		if (HOST_ID) socket.send(JSON.stringify({
+			type: 'HOST_ID',
+			timstamp: Date.now(),
+			hostId: HOST_ID
+		}))
 		// console.log(`[WebSocket Sent] Heartbeat`);
 	}, 3000)
 })
@@ -39,4 +61,5 @@ Socket.on('listening', () => {
 })
 
 
-console.log(`[WebSocket Mounted] Port ${port}`);
+console.log(`[WebSocket Mounted] Port ${port}\n[WebSocket Host Key] ${HOST_KEY}`);
+// 484ee001def98e1fb6ef8062e4d32bfc33084242392769b9c46b011439534598

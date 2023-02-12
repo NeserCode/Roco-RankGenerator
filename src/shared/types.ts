@@ -28,6 +28,11 @@ export interface Ws_BasicInfoPackage {
 	timestamp: number
 }
 
+export interface Ws_ClientSumPackage {
+	timestamp: number
+	client: number
+}
+
 export interface Ws_JoinPackage extends Ws_BasicInfoPackage {
 	type: "JOIN" | "HOST"
 	hostKey?: string

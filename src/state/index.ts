@@ -1,6 +1,10 @@
 import { createStore } from "vuex"
 
-import type { RankLevel, Ws_RankPackage } from "@/shared/types"
+import type {
+	RankLevel,
+	Ws_ClientSumPackage,
+	Ws_RankPackage,
+} from "@/shared/types"
 /**
  * 创建仓库和导出
  */
@@ -20,6 +24,7 @@ export default createStore({
 			id: "",
 			players: [{}],
 			ownerId: "",
+			clientSum: 0,
 		},
 	},
 	mutations: {
@@ -53,6 +58,9 @@ export default createStore({
 				level: player.level,
 				star: player.star,
 			})
+		},
+		updateClientSum(state, data: Ws_ClientSumPackage) {
+			state.room.clientSum = data.client
 		},
 	},
 })

@@ -26,13 +26,11 @@ const JoinTheRoom = debounce(() => {
 		timestamp: Date.now(),
 		hostKey: key.value,
 	})
+	localStorage.setItem("roco.host.key", key.value)
 }, 1500)
 
-// Randomly generate a key
-function randomKey() {
-	return Math.random().toString(36).substr(2)
-}
-const key = ref<string>(randomKey())
+// key
+const key = ref(localStorage.getItem("roco.host.key") || "")
 </script>
 
 <template>
@@ -46,19 +44,19 @@ const key = ref<string>(randomKey())
 			<div class="user-register-rank-label label">段位</div>
 			<div class="user-register-rank-selection">
 				<select v-model="config.rank" disabled>
-					<option value="0">学徒魔法师</option>
-					<option value="1">初级魔法师</option>
-					<option value="2">中级魔法师</option>
-					<option value="3">高级魔法师</option>
-					<option value="4">魔导士</option>
-					<option value="5">圣魔导师</option>
+					<option :value="0">学徒魔法师</option>
+					<option :value="1">初级魔法师</option>
+					<option :value="2">中级魔法师</option>
+					<option :value="3">高级魔法师</option>
+					<option :value="4">魔导士</option>
+					<option :value="5">圣魔导师</option>
 				</select>
 				<select v-model="config.level" disabled>
-					<option value="0">一段</option>
-					<option value="1">二段</option>
-					<option value="2">三段</option>
-					<option value="3">四段</option>
-					<option value="4">五段</option>
+					<option :value="0">一段</option>
+					<option :value="1">二段</option>
+					<option :value="2">三段</option>
+					<option :value="3">四段</option>
+					<option :value="4">五段</option>
 				</select>
 				<input
 					type="number"
@@ -69,8 +67,11 @@ const key = ref<string>(randomKey())
 				/>星
 			</div>
 			<div class="room-id-input">
-				<div class="room-id-input-label label">房间密钥</div>
-				<input type="text" :value="key" />
+				<div class="room-id-input-label label">
+					房间密钥
+					<label title="决定是否成为房主">[可选]</label>
+				</div>
+				<input type="text" v-model="key" />
 			</div>
 
 			<div class="operation">

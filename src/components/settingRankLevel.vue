@@ -13,21 +13,21 @@ const { boundValue } = inject(SettingOptionToken, {})
 			<div class="roco-rank-level-selection">
 				<span class="line">
 					<select v-model="boundValue.rank">
-						<option value="0">学徒魔法师</option>
-						<option value="1">初级魔法师</option>
-						<option value="2">中级魔法师</option>
-						<option value="3">高级魔法师</option>
-						<option value="4">魔导士</option>
-						<option value="5">圣魔导师</option>
+						<option :value="0">学徒魔法师</option>
+						<option :value="1">初级魔法师</option>
+						<option :value="2">中级魔法师</option>
+						<option :value="3">高级魔法师</option>
+						<option :value="4">魔导士</option>
+						<option :value="5">圣魔导师</option>
 					</select>
 				</span>
 				<span class="line">
 					<select v-model="boundValue.level">
-						<option value="0">一段</option>
-						<option value="1">二段</option>
-						<option value="2">三段</option>
-						<option value="3">四段</option>
-						<option value="4">五段</option>
+						<option :value="0">一段</option>
+						<option :value="1">二段</option>
+						<option :value="2">三段</option>
+						<option :value="3">四段</option>
+						<option :value="4">五段</option>
 					</select>
 					<input
 						type="number"

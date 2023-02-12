@@ -49,9 +49,12 @@ const wsProxy = ref<WebSocketProxy>(
 			}
 			// update room player list
 			else if (data.type === "RANK") {
-				$store.commit("updateRoomPlayerList", data)
+				// $store.commit("updateRoomPlayers", data)
+				$Bus.emit("update-join-player", data)
 			}
-			// otherwise
+			// client number
+			else if (data.client !== undefined)
+				$Bus.emit("update-client-number", data)
 			else console.log(data)
 		}
 	})
@@ -69,7 +72,7 @@ onUnmounted(() => {
 
 <template>
 	<div class="home">
-		<user-room v-if="$store.state.isJoinedRoom" />
+		<user-room />
 		<user-register />
 	</div>
 </template>

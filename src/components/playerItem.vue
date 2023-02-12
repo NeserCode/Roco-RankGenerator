@@ -46,13 +46,15 @@ const computedRank = computed(() => {
 	}
 	return `${rankText}·${levelText}·${player.value.star}星`
 })
+
+console.log($store.state)
 </script>
 
 <template>
 	<div class="player-item">
 		<div class="player-item-container">
 			<div class="player-item-nickname">
-				<span class="host">主</span>
+				<span v-if="$store.state.isHost" class="host">主</span>
 				{{ player.nickname }}
 			</div>
 			<div class="player-item-rank">{{ computedRank }}</div>
@@ -63,7 +65,7 @@ const computedRank = computed(() => {
 <style lang="postcss" scoped>
 .player-item {
 	@apply inline-block flex-row justify-center w-full py-1 px-2
-  border-slate-300 dark:border-slate-500;
+  border-slate-300 dark:border-slate-500 select-none;
 }
 
 .player-item:nth-child(odd) {
@@ -75,8 +77,8 @@ const computedRank = computed(() => {
 }
 
 .player-item-nickname .host {
-	@apply inline-block justify-center items-center text-sm px-1 py-px rounded-full
-  bg-slate-600 text-slate-100 select-none;
+	@apply inline-block justify-center items-center text-sm px-1 rounded-full
+  bg-slate-600 text-slate-100 dark:bg-slate-200 dark:text-slate-700 select-none;
 }
 
 .player-item-nickname {

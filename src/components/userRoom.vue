@@ -62,7 +62,7 @@ const players = ref<Ws_RankPackage[]>($store.state.room.players.slice(1))
 	border-2 border-slate-300 dark:border-slate-500;
 }
 .player-list {
-	@apply w-1/4;
+	@apply w-1/4 rounded-l;
 }
 
 .player-list .top-info {
@@ -79,6 +79,6 @@ const players = ref<Ws_RankPackage[]>($store.state.room.players.slice(1))
 }
 
 .screen {
-	@apply w-1/2 py-2;
+	@apply w-1/2 py-2 rounded-r;
 }
 </style>

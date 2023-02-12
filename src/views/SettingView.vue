@@ -88,6 +88,11 @@ watch(
 		config.rank = newVal.rank
 		config.level = newVal.level
 		config.star = newVal.star
+		$store.commit("updateUserRank", {
+			rank: config.rank,
+			level: config.level,
+			star: config.star,
+		})
 		configStorager.setConfig(config)
 	},
 	{ deep: true }

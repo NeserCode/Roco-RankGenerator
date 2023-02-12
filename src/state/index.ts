@@ -23,7 +23,6 @@ export default createStore({
 		room: {
 			id: "",
 			players: [{}],
-			ownerId: "",
 			clientSum: 0,
 		},
 	},
@@ -31,18 +30,23 @@ export default createStore({
 		ensureJoinedRoom(state) {
 			state.isJoinedRoom = true
 		},
-		ensureHost(state) {
-			state.isHost = true
-		},
 		ensureQuitRoom(state) {
 			state.isJoinedRoom = false
 			state.isHost = false
 		},
-		ensureUnhost(state) {
-			state.isHost = false
-		},
 		updateRoomId(state, id: string) {
 			state.room.id = id
+			if (
+				!state.isHost &&
+				state.isJoinedRoom &&
+				state.room.id === state.user.id
+			)
+				state.isHost = true
+			else if (state.isHost && state.room.id !== state.user.id)
+				state.isHost = false
+		},
+		updateUserId(state, id: string) {
+			state.user.id = id
 		},
 		updateUserNickname(state, { id, nickname }) {
 			state.user.id = id

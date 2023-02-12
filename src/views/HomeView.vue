@@ -35,14 +35,14 @@ const wsProxy = ref<WebSocketProxy>(
 			// Join room
 			if (data.type === ("HOST" || "JOIN")) {
 				// self join room
-				if (data.id === config.id && !$store.state.isJoiningRoom) {
+				if (data.id === config.id && !$store.state.isJoinedRoom) {
 					console.log("Join room success")
 					$store.commit("ensureJoinedRoom")
 					// send user info
 					wsProxy.value.send(JSON.stringify(getUserInfo()))
 				}
 				// other user join room
-				else if (data.id !== config.id && $store.state.isJoiningRoom) {
+				else if (data.id !== config.id && $store.state.isJoinedRoom) {
 					console.log("Other user join room")
 					$store.commit("ensureJoinedRoom")
 				}

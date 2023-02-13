@@ -101,7 +101,7 @@ const getComputedTime = (timestamp: number) => {
 <style lang="postcss" scoped>
 .room {
 	@apply inline-flex flex-col items-center w-full
-	bg-gray-50 dark:bg-gray-700 text-gray-800 py-2 dark:text-gray-200;
+	bg-gray-50 dark:bg-gray-700 text-gray-800 pt-2 dark:text-gray-200;
 }
 
 .room-container {
@@ -110,7 +110,7 @@ const getComputedTime = (timestamp: number) => {
 
 .player-list,
 .screen {
-	@apply inline-flex flex-col items-center h-96
+	@apply inline-flex flex-col items-center h-80
 	border-2 border-slate-300 dark:border-slate-500;
 }
 .player-list {

@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import UserRegister from "@/components/userRegister.vue"
+import HostOperations from "@/components/hostOperations.vue"
 import UserRoom from "@/components/userRoom.vue"
 
 import { WebSocketProxy } from "@/utils/WebsocketMonitor"
@@ -36,7 +37,7 @@ const wsProxy = ref<WebSocketProxy>(
 			if (data.type === ("HOST" || "JOIN")) {
 				// self join room
 				if (data.id === config.id && !$store.state.isJoinedRoom) {
-					console.log("Join room success")
+					console.log("[JOIN]Join room success")
 					$store.commit("ensureJoinedRoom")
 					// send user info
 					wsProxy.value.send(JSON.stringify(getUserInfo()))
@@ -59,7 +60,7 @@ const wsProxy = ref<WebSocketProxy>(
 			// client number
 			else if (data.client !== undefined)
 				$Bus.emit("update-client-number", data)
-			else console.log(data)
+			else console.log("[Exception]", data)
 		}
 	})
 )
@@ -76,6 +77,7 @@ onUnmounted(() => {
 
 <template>
 	<div class="home">
+		<host-operations />
 		<user-room />
 		<user-register />
 	</div>

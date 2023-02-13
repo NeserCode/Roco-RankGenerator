@@ -4,28 +4,67 @@ import { useStore } from "vuex"
 import { ref } from "vue"
 import { $Bus } from "@/utils/Mitt"
 
-import type { Ws_RankPackage } from "@/shared/types"
+import type {
+	Ws_RankPackage,
+	Ws_HostPackage,
+	BasicMessage,
+} from "@/shared/types"
 
 const $store = useStore()
+
+// Update Client Number
 $Bus.on("update-client-number", (data) => {
 	$store.commit("updateClientSum", data)
 })
 
+// Join Room Message
 $Bus.on("update-join-player", (data) => {
 	$store.commit("updateRoomPlayers", data)
 
 	welcomeJoinPlayer(data)
 })
 
+// Host Room Message
+$Bus.on("ensure-host-room", (data) => {
+	noticeHostPlayer(data)
+})
+
+const messageQueue = ref<BasicMessage[]>([])
 const welcomeWord = ref("欢迎")
+const oneWord = ref("")
+
 function welcomeJoinPlayer(data: Ws_RankPackage) {
 	welcomeWord.value = `欢迎 ${data.nickname} 加入了房间`
 
 	players.value = $store.state.room.players.slice(1)
-	console.log(players.value)
+	messageQueue.value.push({
+		type: "JOIN",
+		message: welcomeWord.value,
+		timestamp: Date.now(),
+	})
+}
+
+function noticeHostPlayer(data: Ws_HostPackage) {
+	oneWord.value = `${data.nickname} 成为了房主`
+	messageQueue.value.push({
+		type: "HOST",
+		message: oneWord.value,
+		timestamp: Date.now(),
+	})
 }
 
 const players = ref<Ws_RankPackage[]>($store.state.room.players.slice(1))
+
+const getComputedTime = (timestamp: number) => {
+	// fix zero
+	const date = new Date(timestamp)
+	const hour = date.getHours() < 10 ? `0${date.getHours()}` : date.getHours()
+	const minute =
+		date.getMinutes() < 10 ? `0${date.getMinutes()}` : date.getMinutes()
+	const second =
+		date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
+	return `${hour}:${minute}:${second}`
+}
 </script>
 
 <template>
@@ -41,7 +80,20 @@ const players = ref<Ws_RankPackage[]>($store.state.room.players.slice(1))
 					</div>
 				</div>
 			</div>
-			<div class="screen">{{ welcomeWord }}</div>
+			<div class="screen">
+				<div class="message-container">
+					<div
+						:class="['item', message.type]"
+						v-for="message in messageQueue"
+						:key="message.timestamp"
+					>
+						<span class="prefix timestamp"
+							>[{{ getComputedTime(message.timestamp) }}]</span
+						>
+						<span class="message-item">{{ message.message }}</span>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -80,5 +132,30 @@ const players = ref<Ws_RankPackage[]>($store.state.room.players.slice(1))
 
 .screen {
 	@apply w-1/2 py-2 rounded-r;
+}
+
+/* Message */
+.message-container {
+	@apply inline-flex flex-col items-center w-full h-full overflow-y-auto;
+}
+
+.message-container .item {
+	@apply inline-flex flex-row items-center justify-start w-full;
+}
+
+.message-container .prefix {
+	@apply inline-flex items-center justify-center w-1/4 py-0.5;
+}
+
+.message-container .message-item {
+	@apply inline-flex items-center w-3/4 py-0.5;
+}
+
+.message-container .JOIN {
+	@apply text-green-400 dark:text-green-500;
+}
+
+.message-container .HOST {
+	@apply text-blue-400 dark:text-blue-500;
 }
 </style>

@@ -33,6 +33,11 @@ export interface Ws_ClientSumPackage {
 	client: number
 }
 
+export interface Ws_HostPackage extends Ws_BasicInfoPackage {
+	type: "HOST_ENSURE"
+	nickname: string
+}
+
 export interface Ws_JoinPackage extends Ws_BasicInfoPackage {
 	type: "JOIN" | "HOST"
 	hostKey?: string
@@ -59,3 +64,18 @@ export interface Ws_RankPackage extends Ws_BasicInfoPackage {
 export type Config = ServerInfo & Nickname & RankLevel & Id
 
 export type BoundType = ServerInfo | Nickname | RankLevel
+
+export interface BasicMessage {
+	type:
+		| "MESSAGE"
+		| "ERROR"
+		| "WARN"
+		| "HOST"
+		| "JOIN"
+		| "RANK"
+		| "BEFORE_START"
+		| "BEFORE_ROUND"
+		| "ROUNDDOWN"
+	timestamp: number
+	message: string
+}

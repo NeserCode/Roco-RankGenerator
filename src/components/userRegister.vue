@@ -26,7 +26,10 @@ const JoinTheRoom = debounce(() => {
 		timestamp: Date.now(),
 		hostKey: key.value,
 	})
-	$store.commit("updateUserId", config.value.id)
+	$store.commit("updateUserNickname", {
+		id: config.value.id,
+		nickname: config.value.nickname,
+	})
 	localStorage.setItem("roco.host.key", key.value)
 }, 1500)
 

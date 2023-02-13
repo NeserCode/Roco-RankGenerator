@@ -46,8 +46,6 @@ const computedRank = computed(() => {
 	}
 	return `${rankText}·${levelText}·${player.value.star}星`
 })
-
-console.log($store.state)
 </script>
 
 <template>

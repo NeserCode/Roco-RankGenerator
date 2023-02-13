@@ -1,4 +1,5 @@
 import { createStore } from "vuex"
+import { $Bus } from "@/utils/Mitt"
 
 import type {
 	RankLevel,
@@ -40,13 +41,16 @@ export default createStore({
 				!state.isHost &&
 				state.isJoinedRoom &&
 				state.room.id === state.user.id
-			)
+			) {
 				state.isHost = true
-			else if (state.isHost && state.room.id !== state.user.id)
+				$Bus.emit("ensure-host-room", {
+					id: state.room.id,
+					timestamp: Date.now(),
+					type: "HOST_ENSURE",
+					nickname: state.user.nickname,
+				})
+			} else if (state.isHost && state.room.id !== state.user.id)
 				state.isHost = false
-		},
-		updateUserId(state, id: string) {
-			state.user.id = id
 		},
 		updateUserNickname(state, { id, nickname }) {
 			state.user.id = id

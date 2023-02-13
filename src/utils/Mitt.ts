@@ -4,6 +4,7 @@ import type {
 	Ws_JoinPackage,
 	Ws_ClientSumPackage,
 	Ws_RankPackage,
+	Ws_HostPackage,
 } from "@/shared/types"
 
 export const $Bus = Mitt<{
@@ -11,4 +12,5 @@ export const $Bus = Mitt<{
 	"request-join-room": Ws_JoinPackage
 	"update-client-number": Ws_ClientSumPackage
 	"update-join-player": Ws_RankPackage
+	"ensure-host-room": Ws_HostPackage
 }>()

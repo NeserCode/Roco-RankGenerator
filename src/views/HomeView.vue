@@ -57,6 +57,19 @@ const wsProxy = ref<WebSocketProxy>(
 				// $store.commit("updateRoomPlayers", data)
 				$Bus.emit("update-join-player", data)
 			}
+			// update own rank
+			else if (data.type === "RANK_UPDATE") {
+				$Bus.emit("update-rank", data)
+				$store.commit("updateRank", data)
+				$store.commit("updateRank", {
+					id: "2",
+					nickname: "测试i3",
+					rank: 5,
+					level: 4,
+					star: 4,
+					timestamp: Date.now(),
+				})
+			}
 			// client number
 			else if (data.client !== undefined)
 				$Bus.emit("update-client-number", data)
@@ -67,11 +80,46 @@ const wsProxy = ref<WebSocketProxy>(
 
 // Request join room Listener
 $Bus.on("request-join-room", (data) => {
+	// Test player data
+	for (let i = 0; i < 5; i++) {
+		wsProxy.value.send(
+			JSON.stringify({
+				type: "RANK",
+				id: `${i}`,
+				nickname: `测试${i}`,
+				rank: 3,
+				level: 2,
+				star: 1,
+				timestamp: Date.now(),
+			})
+		)
+	}
+
 	wsProxy.value.send(JSON.stringify(data))
+})
+
+// Update User Rank
+$Bus.on("update-own-rank", () => {
+	let config3 = getUserInfo()
+	wsProxy.value.send(
+		JSON.stringify({
+			type: "RANK_UPDATE",
+			id: config3.id,
+			nickname: config3.nickname,
+			rank: config3.rank,
+			level: config3.level,
+			star: config3.star,
+			timestamp: Date.now(),
+		})
+	)
 })
 
 onUnmounted(() => {
 	wsProxy.value.close()
+	$Bus.off("request-join-room")
+	$Bus.off("update-join-player")
+	$Bus.off("update-client-number")
+	$Bus.off("ensure-host-room")
 })
 </script>
 

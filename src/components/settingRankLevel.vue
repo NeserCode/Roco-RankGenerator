@@ -4,6 +4,17 @@ import { RankLimit } from "@/shared/rankLimit"
 import { inject } from "vue"
 
 const { boundValue } = inject(SettingOptionToken, {})
+
+function resetLevel() {
+	if (boundValue.rank < 4) {
+		boundValue.level = 0
+		boundValue.star = 0
+	}
+}
+
+const computedMax = () => {
+	return RankLimit.Star - (boundValue.rank < 3 ? 1 : 0)
+}
 </script>
 
 <template>
@@ -12,7 +23,7 @@ const { boundValue } = inject(SettingOptionToken, {})
 			<div class="roco-rank-level-label">等级</div>
 			<div class="roco-rank-level-selection">
 				<span class="line">
-					<select v-model="boundValue.rank">
+					<select v-model="boundValue.rank" @change="resetLevel">
 						<option :value="0">学徒魔法师</option>
 						<option :value="1">初级魔法师</option>
 						<option :value="2">中级魔法师</option>
@@ -23,15 +34,15 @@ const { boundValue } = inject(SettingOptionToken, {})
 				</span>
 				<span class="line">
 					<select v-model="boundValue.level">
-						<option :value="0">一段</option>
+						<option :value="0" selected>一段</option>
 						<option :value="1">二段</option>
 						<option :value="2">三段</option>
-						<option :value="3">四段</option>
-						<option :value="4">五段</option>
+						<option :value="3" :disabled="boundValue.rank < 2">四段</option>
+						<option :value="4" :disabled="boundValue.rank < 4">五段</option>
 					</select>
 					<input
 						type="number"
-						:max="RankLimit.Star"
+						:max="computedMax()"
 						min="0"
 						v-model="boundValue.star"
 					/>星

@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import type { Config } from "@/shared/types"
-import { RankLimit } from "@/shared/rankLimit"
 import { configStorager } from "@/utils/ConfigStorage"
 import { $Bus } from "@/utils/Mitt"
 import { debounce } from "ts-debounce"

@@ -13,4 +13,6 @@ export const $Bus = Mitt<{
 	"update-client-number": Ws_ClientSumPackage
 	"update-join-player": Ws_RankPackage
 	"ensure-host-room": Ws_HostPackage
+	"update-own-rank": void
+	"update-rank": Ws_RankPackage
 }>()

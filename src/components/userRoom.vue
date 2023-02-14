@@ -1,7 +1,7 @@
 <script lang="ts" setup>
 import PlayerItem from "./playerItem.vue"
 import { useStore } from "vuex"
-import { ref } from "vue"
+import { ref, computed } from "vue"
 import { $Bus } from "@/utils/Mitt"
 
 import type {
@@ -22,11 +22,18 @@ $Bus.on("update-join-player", (data) => {
 	$store.commit("updateRoomPlayers", data)
 
 	welcomeJoinPlayer(data)
+	scrolltoBottom()
 })
 
 // Host Room Message
 $Bus.on("ensure-host-room", (data) => {
 	noticeHostPlayer(data)
+	scrolltoBottom()
+})
+
+// Update player rank
+$Bus.on("update-rank", () => {
+	players.value = $store.state.room.players.slice(1)
 })
 
 const messageQueue = ref<BasicMessage[]>([])
@@ -65,6 +72,19 @@ const getComputedTime = (timestamp: number) => {
 		date.getSeconds() < 10 ? `0${date.getSeconds()}` : date.getSeconds()
 	return `${hour}:${minute}:${second}`
 }
+
+// get computed class which is selected
+const whoChecked = ref("")
+const computedClass = computed(() => (playerId: string) => {
+	return whoChecked.value === playerId ? "isChecked" : null
+})
+
+// scroll to bottom
+const messageContainer = ref<HTMLElement>()
+function scrolltoBottom() {
+	if (messageContainer.value)
+		messageContainer.value.scrollTop = messageContainer.value.scrollHeight
+}
 </script>
 
 <template>
@@ -76,12 +96,25 @@ const getComputedTime = (timestamp: number) => {
 				</div>
 				<div class="list">
 					<div class="item" v-for="player in players" :key="player.id">
-						<player-item :player="player" />
+						<input
+							type="radio"
+							name="player"
+							:value="player.id"
+							:id="player.nickname"
+							v-model="whoChecked"
+							disabled
+						/>
+						<label :for="player.nickname" class="label">
+							<player-item
+								:player="player"
+								:class="[computedClass(player.id)]"
+							/>
+						</label>
 					</div>
 				</div>
 			</div>
 			<div class="screen">
-				<div class="message-container">
+				<div class="message-container" ref="messageContainer">
 					<div
 						:class="['item', message.type]"
 						v-for="message in messageQueue"
@@ -123,7 +156,7 @@ const getComputedTime = (timestamp: number) => {
 }
 
 .player-list .list {
-	@apply inline-flex flex-col items-center w-full h-full overflow-y-auto;
+	@apply inline-flex flex-col w-full h-full overflow-y-auto;
 }
 
 .player-list .item {
@@ -131,16 +164,22 @@ const getComputedTime = (timestamp: number) => {
 }
 
 .screen {
-	@apply w-1/2 py-2 rounded-r;
+	@apply w-1/2 rounded-r;
 }
 
 /* Message */
 .message-container {
-	@apply inline-flex flex-col items-center w-full h-full overflow-y-auto;
+	@apply inline-flex flex-col items-center w-full h-full pb-12 overflow-y-auto;
 }
 
 .message-container .item {
 	@apply inline-flex flex-row items-center justify-start w-full;
+}
+.message-container .item:first-child {
+	@apply mt-2;
+}
+.message-container .item:last-child {
+	@apply mb-2;
 }
 
 .message-container .prefix {
@@ -157,5 +196,19 @@ const getComputedTime = (timestamp: number) => {
 
 .message-container .HOST {
 	@apply text-blue-400 dark:text-blue-500;
+}
+
+/* radio style */
+.player-list input[type="radio"] {
+	@apply hidden;
+}
+
+.player-list input[type="radio"] + .label {
+	@apply inline-flex flex-row items-center justify-center w-full
+	cursor-pointer;
+}
+
+.player-list input[type="radio"] + .label .isChecked {
+	@apply bg-green-400 dark:bg-blue-400;
 }
 </style>

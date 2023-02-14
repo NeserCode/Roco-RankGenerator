@@ -1,6 +1,9 @@
 <script lang="ts" setup>
 import { useStore } from "vuex"
 import { computed, toRefs, defineProps } from "vue"
+
+// import { $Bus } from '@/utils/Mitt'
+
 import { Ws_RankPackage } from "@/shared/types"
 
 const $props = defineProps<{
@@ -46,13 +49,17 @@ const computedRank = computed(() => {
 	}
 	return `${rankText}·${levelText}·${player.value.star}星`
 })
+
+const wheatherHost = computed(() => {
+	return $store.state.room.id === player.value.id
+})
 </script>
 
 <template>
 	<div class="player-item">
 		<div class="player-item-container">
 			<div class="player-item-nickname">
-				<span v-if="$store.state.isHost" class="host">主</span>
+				<span v-if="wheatherHost" class="host">主</span>
 				{{ player.nickname }}
 			</div>
 			<div class="player-item-rank">{{ computedRank }}</div>
@@ -66,11 +73,11 @@ const computedRank = computed(() => {
   border-slate-300 dark:border-slate-500 select-none;
 }
 
-.player-item:nth-child(odd) {
+.item:nth-child(odd) .player-item {
 	@apply bg-slate-100 dark:bg-slate-600;
 }
 
-.player-item:nth-child(even) {
+.item:nth-child(even) .player-item {
 	@apply bg-slate-200 dark:bg-slate-700;
 }
 

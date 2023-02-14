@@ -14,6 +14,7 @@ export default createStore({
 	state: {
 		isJoinedRoom: false,
 		isHost: false,
+		isReady: false,
 		user: {
 			id: "",
 			nickname: "",
@@ -23,7 +24,15 @@ export default createStore({
 		},
 		room: {
 			id: "",
-			players: [{}],
+			players: [
+				{
+					id: "",
+					nickname: "",
+					rank: 0,
+					level: 0,
+					star: 0,
+				},
+			],
 			clientSum: 0,
 		},
 	},
@@ -56,6 +65,16 @@ export default createStore({
 			state.user.id = id
 			state.user.nickname = nickname
 		},
+		updateRank(state, data: Ws_RankPackage) {
+			const player = state.room.players.findIndex(
+				(player) => player.id === data.id
+			)
+			if (player !== -1) {
+				state.room.players[player].rank = data.rank
+				state.room.players[player].level = data.level
+				state.room.players[player].star = data.star
+			}
+		},
 		updateUserRank(state, rank: RankLevel) {
 			state.user.rank = rank.rank
 			state.user.level = rank.level
@@ -72,6 +91,12 @@ export default createStore({
 		},
 		updateClientSum(state, data: Ws_ClientSumPackage) {
 			state.room.clientSum = data.client
+		},
+		getReady(state) {
+			state.isReady = true
+		},
+		cancelReady(state) {
+			state.isReady = false
 		},
 	},
 })

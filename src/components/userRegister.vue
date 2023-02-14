@@ -100,7 +100,9 @@ const computedRank = computed(() => {
 						{{ computedRank }}
 					</span>
 				</span>
-				<span class="tip">! 以上信息在发车中是十分重要的身份凭证</span>
+				<span class="tip"
+					>! 与服务器相连的功能模块都使用了防抖<br />即操作存在唯一的延迟而重复操作会重置延时</span
+				>
 				<span class="tip">! 在发车过程中请不要更改段位信息</span>
 			</div>
 

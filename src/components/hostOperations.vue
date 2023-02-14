@@ -40,7 +40,13 @@ const updateOwnRank = debounce(() => {
 			</button>
 			<button class="operation" v-if="$store.state.isHost">开始发车</button>
 			<button class="operation" v-if="$store.state.isHost">中场延迟</button>
-			<button class="operation" @click="updateOwnRank">更新段位</button>
+			<button
+				class="operation"
+				@click="updateOwnRank"
+				:disabled="!$store.state.isJoinedRoom"
+			>
+				更新段位
+			</button>
 		</div>
 	</div>
 </template>

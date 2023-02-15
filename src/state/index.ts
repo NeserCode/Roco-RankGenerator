@@ -24,6 +24,7 @@ export default createStore({
 		},
 		room: {
 			id: "",
+			round: 0,
 			players: [
 				{
 					id: "",
@@ -97,6 +98,9 @@ export default createStore({
 		},
 		cancelReady(state) {
 			state.isReady = false
+		},
+		nextRound(state) {
+			state.room.round++
 		},
 	},
 })

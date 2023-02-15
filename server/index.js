@@ -6,6 +6,7 @@ const Socket = new WebSocketServer({ port, clientTracking: true })
 const HOST_KEY = createHmac('sha256', 'NeserCode.Roco').digest('hex')
 
 let HOST_ID = null
+let ROUND_SUM = 0
 
 Socket.on('close', (e) => {
 	console.log(`[WebSocket Closed] ${e}`);
@@ -26,12 +27,25 @@ Socket.on('connection', (socket) => {
 			HOST_ID = JsonMessage.id
 			console.log(`[WebSocket Host] ${HOST_ID}`);
 		} else if (JsonMessage.type === "BEFORE_START") {
+			ROUND_SUM = JsonMessage.roundLimit ?? 10
 			setTimeout(() => {
 				socket.send(JSON.stringify({
 					type: 'START_ROUND',
 					timestamp: Date.now(),
 				}))
 			}, JsonMessage.timeCount * 1000)
+		} else if (JsonMessage.type === "BEFORE_ROUND" && ROUND_SUM - 1 > 0) {
+			console.log(`[WebSocket Round Start]`);
+			setTimeout(() => {
+				socket.send(JSON.stringify({
+					type: 'START_ROUND',
+					round: JsonMessage.round,
+					timestamp: Date.now(),
+				}))
+			}, JsonMessage.timeCount * 1000)
+
+			ROUND_SUM--
+			console.log(`[WebSocket Round End] Leave ${ROUND_SUM} Round`);
 		}
 
 		let index = 0
@@ -40,7 +54,7 @@ Socket.on('connection', (socket) => {
 			console.log(`[Reboardcast User $${++index}]`);
 		});
 
-		console.log(`[WebSocket Reboardcast End] Total Client: ${index}`);
+		console.log(`[WebSocket Reboardcast End]`);
 
 		Socket.clients.forEach((c) => {
 			c.send(JSON.stringify({

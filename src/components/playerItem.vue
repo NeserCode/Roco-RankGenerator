@@ -59,7 +59,7 @@ const wheatherHost = computed(() => {
 	<div class="player-item">
 		<div class="player-item-container">
 			<div class="player-item-nickname">
-				<span v-if="wheatherHost" class="host">主</span>
+				<span v-if="wheatherHost" class="host">房主</span>
 				{{ player.nickname }}
 			</div>
 			<div class="player-item-rank">{{ computedRank }}</div>

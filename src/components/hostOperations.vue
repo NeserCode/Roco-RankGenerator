@@ -30,6 +30,16 @@ const updateOwnRank = debounce(() => {
 const startRound = debounce(() => {
 	$Bus.emit("start-round")
 }, 2000)
+
+const nextRoundStart = debounce(() => {
+	$Bus.emit("next-round", {
+		round: $store.state.room.round,
+	})
+}, 3000)
+
+const ableToStart = computed(() => {
+	return !($store.state.room.round < 12)
+})
 </script>
 
 <template>
@@ -45,7 +55,14 @@ const startRound = debounce(() => {
 			<button class="operation" v-if="$store.state.isHost" @click="startRound">
 				开始发车
 			</button>
-			<button class="operation" v-if="$store.state.isHost">中场延迟</button>
+			<button
+				class="operation"
+				v-if="$store.state.isHost"
+				:disabled="ableToStart"
+				@click="nextRoundStart"
+			>
+				下一轮开始
+			</button>
 			<button
 				class="operation"
 				@click="updateOwnRank"

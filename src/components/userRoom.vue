@@ -101,7 +101,7 @@ function noticeStartRound(data: Ws_TimePackage) {
 		if (data.timeCount > 0) {
 			data.timeCount--
 			if (data.timeCount <= 10) {
-				oneWord.value = `发车倒计时: ${data.timeCount} 秒 看看废话看看废话看看废话`
+				oneWord.value = `发车倒计时: ${data.timeCount} 秒`
 				messageQueue.value.push({
 					type: "BEFORE_START",
 					message: oneWord.value,
@@ -115,6 +115,48 @@ function noticeStartRound(data: Ws_TimePackage) {
 
 $Bus.on("start-round-count", (data) => {
 	noticeStartRound(data)
+	scrolltoBottom()
+})
+
+// before round message
+function noticeBeforeRound(
+	data: Ws_TimePackage & {
+		round: number
+	}
+) {
+	oneWord.value = `第${data.round}回合发车倒计时: ${data.timeCount} 秒`
+	messageQueue.value.push({
+		type: "BEFORE_ROUND",
+		message: oneWord.value,
+		timestamp: Date.now(),
+	})
+
+	// Start interval Countdown
+	const interval = setInterval(() => {
+		if (data.timeCount > 0) {
+			data.timeCount--
+			if (data.timeCount <= 5 && data.timeCount > 0) {
+				oneWord.value = `准备匹配倒计时: ${data.timeCount} 秒`
+				messageQueue.value.push({
+					type: "BEFORE_ROUND",
+					message: oneWord.value,
+					timestamp: Date.now(),
+				})
+			} else if (data.timeCount === 0) {
+				oneWord.value = `请开始匹配`
+				messageQueue.value.push({
+					type: "BEFORE_ROUND",
+					message: oneWord.value,
+					timestamp: Date.now(),
+				})
+			}
+		} else clearInterval(interval)
+		scrolltoBottom()
+	}, 1000)
+}
+
+$Bus.on("next-round-count", (data) => {
+	noticeBeforeRound(data)
 	scrolltoBottom()
 })
 </script>

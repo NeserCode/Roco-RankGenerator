@@ -66,6 +66,14 @@ const wsProxy = ref<WebSocketProxy>(
 			else if (data.type === "BEFORE_START") {
 				$Bus.emit("start-round-count", data)
 			}
+			// before round start
+			else if (data.type === "BEFORE_ROUND") {
+				$Bus.emit("next-round-count", data)
+			}
+			// start next round
+			else if (data.type === "START_ROUND") {
+				$store.commit("nextRound")
+			}
 			// client number
 			else if (data.client !== undefined)
 				$Bus.emit("update-client-number", data)
@@ -117,6 +125,20 @@ $Bus.on("start-round", () => {
 			type: "BEFORE_START",
 			id: $store.state.user.id,
 			timeCount: 15,
+			roundLimit: 12,
+			timestamp: Date.now(),
+		})
+	)
+})
+
+// Next Round
+$Bus.on("next-round", ({ round }) => {
+	wsProxy.value.send(
+		JSON.stringify({
+			type: "BEFORE_ROUND",
+			id: $store.state.user.id,
+			round,
+			timeCount: 10,
 			timestamp: Date.now(),
 		})
 	)

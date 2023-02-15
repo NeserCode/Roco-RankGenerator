@@ -7,6 +7,7 @@ import { $Bus } from "@/utils/Mitt"
 import type {
 	Ws_RankPackage,
 	Ws_HostPackage,
+	Ws_TimePackage,
 	BasicMessage,
 } from "@/shared/types"
 
@@ -85,6 +86,37 @@ function scrolltoBottom() {
 	if (messageContainer.value)
 		messageContainer.value.scrollTop = messageContainer.value.scrollHeight
 }
+
+// start round message
+function noticeStartRound(data: Ws_TimePackage) {
+	oneWord.value = `房主 开始了发车倒计时: ${data.timeCount} 秒`
+	messageQueue.value.push({
+		type: "BEFORE_START",
+		message: oneWord.value,
+		timestamp: Date.now(),
+	})
+
+	// Start interval Countdown
+	const interval = setInterval(() => {
+		if (data.timeCount > 0) {
+			data.timeCount--
+			if (data.timeCount <= 10) {
+				oneWord.value = `发车倒计时: ${data.timeCount} 秒 看看废话看看废话看看废话`
+				messageQueue.value.push({
+					type: "BEFORE_START",
+					message: oneWord.value,
+					timestamp: Date.now(),
+				})
+				scrolltoBottom()
+			}
+		} else clearInterval(interval)
+	}, 1000)
+}
+
+$Bus.on("start-round-count", (data) => {
+	noticeStartRound(data)
+	scrolltoBottom()
+})
 </script>
 
 <template>
@@ -169,7 +201,8 @@ function scrolltoBottom() {
 
 /* Message */
 .message-container {
-	@apply inline-flex flex-col items-center w-full h-full pb-12 overflow-y-auto;
+	@apply inline-flex flex-col items-center w-full h-full pb-12 overflow-y-auto
+	scroll-smooth;
 }
 
 .message-container .item {
@@ -183,7 +216,7 @@ function scrolltoBottom() {
 }
 
 .message-container .prefix {
-	@apply inline-flex items-center justify-center w-1/4 py-0.5;
+	@apply inline-flex justify-center w-1/4 h-full py-0.5;
 }
 
 .message-container .message-item {
@@ -198,6 +231,10 @@ function scrolltoBottom() {
 	@apply text-blue-400 dark:text-blue-500;
 }
 
+.message-container .BEFORE_START {
+	@apply text-red-900 dark:text-red-300;
+}
+
 /* radio style */
 .player-list input[type="radio"] {
 	@apply hidden;
@@ -206,6 +243,9 @@ function scrolltoBottom() {
 .player-list input[type="radio"] + .label {
 	@apply inline-flex flex-row items-center justify-center w-full
 	cursor-pointer;
+}
+.player-list input[type="radio"]:disabled + .label {
+	@apply cursor-auto;
 }
 
 .player-list input[type="radio"] + .label .isChecked {

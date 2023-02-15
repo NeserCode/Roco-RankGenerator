@@ -25,6 +25,13 @@ Socket.on('connection', (socket) => {
 		if (JsonMessage.hostKey === HOST_KEY && HOST_ID === null) {
 			HOST_ID = JsonMessage.id
 			console.log(`[WebSocket Host] ${HOST_ID}`);
+		} else if (JsonMessage.type === "BEFORE_START") {
+			setTimeout(() => {
+				socket.send(JSON.stringify({
+					type: 'START_ROUND',
+					timestamp: Date.now(),
+				}))
+			}, JsonMessage.timeCount * 1000)
 		}
 
 		let index = 0

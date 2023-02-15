@@ -26,6 +26,10 @@ const btnClass = computed(() => {
 const updateOwnRank = debounce(() => {
 	$Bus.emit("update-own-rank")
 }, 2000)
+
+const startRound = debounce(() => {
+	$Bus.emit("start-round")
+}, 2000)
 </script>
 
 <template>
@@ -38,7 +42,9 @@ const updateOwnRank = debounce(() => {
 			>
 				{{ readyText }}
 			</button>
-			<button class="operation" v-if="$store.state.isHost">开始发车</button>
+			<button class="operation" v-if="$store.state.isHost" @click="startRound">
+				开始发车
+			</button>
 			<button class="operation" v-if="$store.state.isHost">中场延迟</button>
 			<button
 				class="operation"
@@ -53,7 +59,7 @@ const updateOwnRank = debounce(() => {
 
 <style lang="postcss" scoped>
 .main {
-	@apply inline-flex items-center justify-evenly w-full;
+	@apply inline-flex items-center justify-evenly w-full flex-wrap;
 }
 /* button style */
 button.operation {

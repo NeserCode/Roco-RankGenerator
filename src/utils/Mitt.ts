@@ -5,6 +5,7 @@ import type {
 	Ws_ClientSumPackage,
 	Ws_RankPackage,
 	Ws_HostPackage,
+	Ws_TimePackage,
 } from "@/shared/types"
 
 export const $Bus = Mitt<{
@@ -15,4 +16,6 @@ export const $Bus = Mitt<{
 	"ensure-host-room": Ws_HostPackage
 	"update-own-rank": void
 	"update-rank": Ws_RankPackage
+	"start-round": void
+	"start-round-count": Ws_TimePackage
 }>()

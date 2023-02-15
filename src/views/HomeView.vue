@@ -61,14 +61,10 @@ const wsProxy = ref<WebSocketProxy>(
 			else if (data.type === "RANK_UPDATE") {
 				$Bus.emit("update-rank", data)
 				$store.commit("updateRank", data)
-				$store.commit("updateRank", {
-					id: "2",
-					nickname: "测试i3",
-					rank: 5,
-					level: 4,
-					star: 4,
-					timestamp: Date.now(),
-				})
+			}
+			// start round
+			else if (data.type === "BEFORE_START") {
+				$Bus.emit("start-round-count", data)
 			}
 			// client number
 			else if (data.client !== undefined)
@@ -109,6 +105,18 @@ $Bus.on("update-own-rank", () => {
 			rank: config3.rank,
 			level: config3.level,
 			star: config3.star,
+			timestamp: Date.now(),
+		})
+	)
+})
+
+// Start Round
+$Bus.on("start-round", () => {
+	wsProxy.value.send(
+		JSON.stringify({
+			type: "BEFORE_START",
+			id: $store.state.user.id,
+			timeCount: 15,
 			timestamp: Date.now(),
 		})
 	)

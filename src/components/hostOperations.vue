@@ -36,10 +36,6 @@ const nextRoundStart = debounce(() => {
 		round: $store.state.room.round,
 	})
 }, 3000)
-
-const ableToStart = computed(() => {
-	return !($store.state.room.round <= 12)
-})
 </script>
 
 <template>
@@ -58,7 +54,6 @@ const ableToStart = computed(() => {
 			<button
 				class="operation"
 				v-if="$store.state.isHost"
-				:disabled="ableToStart"
 				@click="nextRoundStart"
 			>
 				下一轮开始

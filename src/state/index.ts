@@ -94,6 +94,27 @@ export default createStore({
 		updateClientSum(state, data: Ws_ClientSumPackage) {
 			state.room.clientSum = data.client
 		},
+		updateRoomPlayersFromWs(
+			state,
+			data: {
+				playerIdList: string[]
+				playerList: Ws_RankPackage[]
+			}
+		) {
+			state.room.players = []
+			data.playerIdList.forEach((id) => {
+				const player = data.playerList.find((player) => player.id === id)
+				if (player) {
+					state.room.players.push({
+						id: player.id,
+						nickname: player.nickname,
+						rank: player.rank,
+						level: player.level,
+						star: player.star,
+					})
+				}
+			})
+		},
 		getReady(state) {
 			state.isReady = true
 		},
@@ -102,6 +123,8 @@ export default createStore({
 		},
 		nextRound(state) {
 			state.room.round++
+			// Auto run
+			// $Bus.emit("next-round", { round: state.room.round })
 		},
 		ensureAddon(state) {
 			state.isAddon = true

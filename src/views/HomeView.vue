@@ -38,6 +38,7 @@ function getRoundInfo(): RoundInfo {
 	}
 }
 
+// 114.115.164.199
 const wsProxy = ref<WebSocketProxy>(
 	new WebSocketProxy(wsUrl, (message) => {
 		if (message.data !== "Heartbeat") {
@@ -86,6 +87,11 @@ const wsProxy = ref<WebSocketProxy>(
 			else if (data.type === "START_ROUND") {
 				$store.commit("nextRound")
 				if (data.isAddon) $store.commit("ensureAddon")
+			}
+			// update players info
+			else if (data.type === "PLAYERS_INFO") {
+				console.log("[PLAYERS_INFO]", data)
+				$store.commit("updateRoomPlayersFromWs", data)
 			}
 			// client number
 			else if (data.client !== undefined)

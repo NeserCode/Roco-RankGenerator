@@ -103,8 +103,16 @@ function noticeStartRound(data: Ws_TimePackage) {
 	const interval = setInterval(() => {
 		if (data.timeCount > 0) {
 			data.timeCount--
-			if (data.timeCount <= 10) {
+			if (data.timeCount <= 10 && data.timeCount > 0) {
 				oneWord.value = `发车倒计时: ${data.timeCount} 秒`
+				messageQueue.value.push({
+					type: "BEFORE_START",
+					message: oneWord.value,
+					timestamp: Date.now(),
+				})
+				scrolltoBottom()
+			} else if (data.timeCount === 0) {
+				oneWord.value = `道路千万条，安全第一条。行车不规范，亲友两行泪。请注意每回合的倒计时哦！`
 				messageQueue.value.push({
 					type: "BEFORE_START",
 					message: oneWord.value,

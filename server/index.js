@@ -53,21 +53,21 @@ Socket.on('connection', (socket) => {
 		}
 
 		if (JsonMessage.type === "JOIN" || JsonMessage.type === "HOST") {
-			PlayerIdList.add(JsonMessage.id)
+			if (JsonMessage.id) PlayerIdList.add(JsonMessage.id)
 			console.log(`[WebSocket Player] ${JsonMessage.id}`);
 		} else if (JsonMessage.type === "RANK") {
 			// not repeat player which identified by id who in PlayerIdList
 			if (PlayerIdList.has(JsonMessage.id) && !PlayerList.find((p) => p.id === JsonMessage.id)) {
 				PlayerList.push(JsonMessage)
 			}
-		}
 
-		socket.send(JSON.stringify({
-			type: 'PLAYERS_INFO',
-			timstamp: Date.now(),
-			playerIdList: [...PlayerIdList],
-			playerList: PlayerList
-		}))
+			socket.send(JSON.stringify({
+				type: 'PLAYERS_INFO',
+				timstamp: Date.now(),
+				playerIdList: [...PlayerIdList],
+				playerList: PlayerList
+			}))
+		}
 
 
 

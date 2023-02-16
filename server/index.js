@@ -47,8 +47,6 @@ Socket.on('connection', (socket) => {
 
 			if (ROUND_SUM - 1 >= 0)
 				ROUND_SUM--
-			else
-				ROUND_SUM = 0
 			console.log(`[WebSocket Round End] Leave ${ROUND_SUM} Round`);
 		}
 

@@ -120,8 +120,11 @@ $Bus.on("start-round-count", (data) => {
 })
 
 // before round message
-function getRoundCount(): number {
-	return configStorager.getConfig().roundCount
+function getRoundInfo() {
+	return {
+		roundCount: configStorager.getConfig().roundCount,
+		roundLimit: configStorager.getConfig().roundLimit,
+	}
 }
 
 function noticeBeforeRound(
@@ -130,8 +133,11 @@ function noticeBeforeRound(
 	}
 ) {
 	if ($store.state.isAddon)
-		oneWord.value = `第${data.round}回合 [加时赛] 发车倒计时: ${data.timeCount} 秒`
-	else oneWord.value = `第${data.round}回合发车倒计时: ${data.timeCount} 秒`
+		oneWord.value = `第 ${data.round} 回合 [加时赛] 发车倒计时: ${data.timeCount} 秒`
+	else
+		oneWord.value = `第 ${data.round}/${
+			getRoundInfo().roundLimit
+		} 回合发车倒计时: ${data.timeCount} 秒`
 	messageQueue.value.push({
 		type: "BEFORE_ROUND",
 		message: oneWord.value,
@@ -142,7 +148,7 @@ function noticeBeforeRound(
 	const interval = setInterval(() => {
 		if (data.timeCount > 0) {
 			data.timeCount--
-			if (data.timeCount <= getRoundCount() && data.timeCount > 0) {
+			if (data.timeCount <= getRoundInfo().roundCount && data.timeCount > 0) {
 				oneWord.value = `准备匹配倒计时: ${data.timeCount} 秒`
 				messageQueue.value.push({
 					type: "BEFORE_ROUND",

@@ -160,6 +160,7 @@ $Bus.on("next-round", ({ round }) => {
 })
 
 onUnmounted(() => {
+	wsProxy.value.send(JSON.stringify({ type: "LEAVE" }))
 	wsProxy.value.close()
 	$Bus.off("request-join-room")
 	$Bus.off("update-join-player")

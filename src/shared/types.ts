@@ -68,6 +68,12 @@ export interface Ws_RankPackage extends Ws_BasicInfoPackage {
 	star: 0 | 1 | 2 | 3 | 4
 }
 
+export interface Ws_BattlePackage extends Ws_BasicInfoPackage {
+	type: "BATTLE"
+	winerId: string
+	loserId: string
+}
+
 export type Config = ServerInfo & Nickname & RankLevel & Id & RoundInfo
 
 export type BoundType = ServerInfo | Nickname | RankLevel | RoundInfo

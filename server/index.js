@@ -5,6 +5,8 @@ const port = 2333
 const Socket = new WebSocketServer({ port, clientTracking: true })
 const HOST_KEY = createHmac('sha256', 'NeserCode.Roco').digest('hex')
 
+let PlayerIdList = new Set([])
+let PlayerList = []
 let HOST_ID = null
 let ROUND_SUM = 0
 
@@ -49,6 +51,25 @@ Socket.on('connection', (socket) => {
 				ROUND_SUM--
 			console.log(`[WebSocket Round End] Leave ${ROUND_SUM} Round`);
 		}
+
+		if (JsonMessage.type === "JOIN" || JsonMessage.type === "HOST") {
+			PlayerIdList.add(JsonMessage.id)
+			console.log(`[WebSocket Player] ${JsonMessage.id}`);
+		} else if (JsonMessage.type === "RANK") {
+			// not repeat player which identified by id who in PlayerIdList
+			if (PlayerIdList.has(JsonMessage.id) && !PlayerList.find((p) => p.id === JsonMessage.id)) {
+				PlayerList.push(JsonMessage)
+			}
+		}
+
+		socket.send(JSON.stringify({
+			type: 'PLAYERS_INFO',
+			timstamp: Date.now(),
+			playerIdList: [...PlayerIdList],
+			playerList: PlayerList
+		}))
+
+
 
 		let index = 0
 		Socket.clients.forEach((c) => {

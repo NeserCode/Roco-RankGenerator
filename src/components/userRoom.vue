@@ -35,7 +35,7 @@ $Bus.on("ensure-host-room", (data) => {
 
 // Update player rank
 $Bus.on("update-rank", () => {
-	players.value = $store.state.room.players.slice(1)
+	players.value = new Set($store.state.room.players.slice(1))
 })
 
 const messageQueue = ref<BasicMessage[]>([])
@@ -45,7 +45,7 @@ const oneWord = ref("")
 function welcomeJoinPlayer(data: Ws_RankPackage) {
 	welcomeWord.value = `欢迎 ${data.nickname} 加入了房间`
 
-	players.value = $store.state.room.players.slice(1)
+	players.value = new Set($store.state.room.players.slice(1))
 	messageQueue.value.push({
 		type: "JOIN",
 		message: welcomeWord.value,
@@ -62,7 +62,9 @@ function noticeHostPlayer(data: Ws_HostPackage) {
 	})
 }
 
-const players = ref<Ws_RankPackage[]>($store.state.room.players.slice(1))
+const players = ref<Set<Ws_RankPackage[]>>(
+	new Set($store.state.room.players.slice(1))
+)
 
 const getComputedTime = (timestamp: number) => {
 	// fix zero
@@ -230,7 +232,7 @@ $Bus.on("next-round-count", (data) => {
 
 .player-list,
 .screen {
-	@apply inline-flex flex-col items-center h-80
+	@apply inline-flex flex-col items-center h-96
 	border-2 border-slate-300 dark:border-slate-500;
 }
 .player-list {

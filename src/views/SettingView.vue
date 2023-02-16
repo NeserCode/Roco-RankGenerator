@@ -3,13 +3,21 @@ import SettingOption from "@/components/settingOption.vue"
 import SettingServerAddress from "@/components/settingServerAddress.vue"
 import SettingNickname from "@/components/settingNickname.vue"
 import SettingRankLevel from "@/components/settingRankLevel.vue"
+import SettingRound from "@/components/settingRound.vue"
+
 import { configStorager } from "@/utils/ConfigStorage"
 import { watch, ref } from "vue"
 import { useStore } from "vuex"
 
 import { createHmac } from "crypto"
 
-import type { ServerInfo, Nickname, RankLevel, Config } from "@/shared/types"
+import type {
+	ServerInfo,
+	Nickname,
+	RankLevel,
+	Config,
+	RoundInfo,
+} from "@/shared/types"
 
 const $store = useStore()
 
@@ -98,6 +106,30 @@ watch(
 	{ deep: true }
 )
 
+function getRoundInfo(): RoundInfo {
+	return {
+		roundCount: configStorager.getConfig().roundCount,
+		roundLimit: configStorager.getConfig().roundLimit,
+		beforeRoundCount: configStorager.getConfig().beforeRoundCount,
+		beforeStartCount: configStorager.getConfig().beforeStartCount,
+	}
+}
+
+const roundInfo = ref<RoundInfo>(getRoundInfo())
+
+watch(
+	roundInfo,
+	(newVal) => {
+		const config: Config = configStorager.getConfig()
+		config.roundCount = newVal.roundCount
+		config.roundLimit = newVal.roundLimit
+		config.beforeRoundCount = newVal.beforeRoundCount
+		config.beforeStartCount = newVal.beforeStartCount
+		configStorager.setConfig(config)
+	},
+	{ deep: true }
+)
+
 const tips = [
 	`本应用只在填入参数合法时才会保存参数\n例如服务器地址为"256.1.1.1"则不会触发保存`,
 	"端口为 0-65535 之间的整数\n通常来说，服务器地址与端口这些信息将由服务端提供",
@@ -116,6 +148,9 @@ const tips = [
 		</setting-option>
 		<setting-option :bound-value="rankLevel">
 			<setting-rank-level />
+		</setting-option>
+		<setting-option :bound-value="roundInfo">
+			<setting-round />
 		</setting-option>
 		<div class="tip-container">
 			<span class="tip" v-for="item of tips" :key="item">{{ item }}</span>

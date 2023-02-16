@@ -23,6 +23,13 @@ export type RankLimit = {
 	Star: 0 | 1 | 2 | 3 | 4
 }
 
+export type RoundInfo = {
+	roundLimit: number
+	roundCount: number
+	beforeStartCount: number
+	beforeRoundCount: number
+}
+
 export interface Ws_BasicInfoPackage {
 	id: string
 	timestamp: number
@@ -61,9 +68,9 @@ export interface Ws_RankPackage extends Ws_BasicInfoPackage {
 	star: 0 | 1 | 2 | 3 | 4
 }
 
-export type Config = ServerInfo & Nickname & RankLevel & Id
+export type Config = ServerInfo & Nickname & RankLevel & Id & RoundInfo
 
-export type BoundType = ServerInfo | Nickname | RankLevel
+export type BoundType = ServerInfo | Nickname | RankLevel | RoundInfo
 
 export interface BasicMessage {
 	type:

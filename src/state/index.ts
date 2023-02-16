@@ -15,6 +15,7 @@ export default createStore({
 		isJoinedRoom: false,
 		isHost: false,
 		isReady: false,
+		isAddon: false,
 		user: {
 			id: "",
 			nickname: "",
@@ -101,6 +102,9 @@ export default createStore({
 		},
 		nextRound(state) {
 			state.room.round++
+		},
+		ensureAddon(state) {
+			state.isAddon = true
 		},
 	},
 })

@@ -3,6 +3,7 @@ import PlayerItem from "./playerItem.vue"
 import { useStore } from "vuex"
 import { ref, computed } from "vue"
 import { $Bus } from "@/utils/Mitt"
+import { configStorager } from "@/utils/ConfigStorage"
 
 import type {
 	Ws_RankPackage,
@@ -119,12 +120,18 @@ $Bus.on("start-round-count", (data) => {
 })
 
 // before round message
+function getRoundCount(): number {
+	return configStorager.getConfig().roundCount
+}
+
 function noticeBeforeRound(
 	data: Ws_TimePackage & {
 		round: number
 	}
 ) {
-	oneWord.value = `第${data.round}回合发车倒计时: ${data.timeCount} 秒`
+	if ($store.state.isAddon)
+		oneWord.value = `第${data.round}回合 [加时赛] 发车倒计时: ${data.timeCount} 秒`
+	else oneWord.value = `第${data.round}回合发车倒计时: ${data.timeCount} 秒`
 	messageQueue.value.push({
 		type: "BEFORE_ROUND",
 		message: oneWord.value,
@@ -135,7 +142,7 @@ function noticeBeforeRound(
 	const interval = setInterval(() => {
 		if (data.timeCount > 0) {
 			data.timeCount--
-			if (data.timeCount <= 5 && data.timeCount > 0) {
+			if (data.timeCount <= getRoundCount() && data.timeCount > 0) {
 				oneWord.value = `准备匹配倒计时: ${data.timeCount} 秒`
 				messageQueue.value.push({
 					type: "BEFORE_ROUND",

@@ -9,7 +9,8 @@ import { $Bus } from "@/utils/Mitt"
 import { ref, onUnmounted } from "vue"
 import { useStore } from "vuex"
 
-import type { Ws_RankPackage } from "@/shared/types"
+import type { RoundInfo, Ws_RankPackage } from "@/shared/types"
+import { identifier } from "@babel/types"
 
 const $store = useStore()
 const config = configStorager.getConfig()
@@ -25,6 +26,16 @@ function getUserInfo(): Ws_RankPackage {
 		level: config2.level,
 		star: config2.star,
 		timestamp: Date.now(),
+	}
+}
+
+function getRoundInfo(): RoundInfo {
+	let configx = configStorager.getConfig()
+	return {
+		roundLimit: configx.roundLimit,
+		roundCount: configx.roundCount,
+		beforeRoundCount: configx.beforeRoundCount,
+		beforeStartCount: configx.beforeStartCount,
 	}
 }
 
@@ -68,11 +79,14 @@ const wsProxy = ref<WebSocketProxy>(
 			}
 			// before round start
 			else if (data.type === "BEFORE_ROUND") {
+				console.log("[BEFORE_ROUND]", data)
+
 				$Bus.emit("next-round-count", data)
 			}
 			// start next round
 			else if (data.type === "START_ROUND") {
 				$store.commit("nextRound")
+				if (data.isAddon) $store.commit("ensureAddon")
 			}
 			// client number
 			else if (data.client !== undefined)
@@ -104,15 +118,15 @@ $Bus.on("request-join-room", (data) => {
 
 // Update User Rank
 $Bus.on("update-own-rank", () => {
-	let config3 = getUserInfo()
+	let userInfo = getUserInfo()
 	wsProxy.value.send(
 		JSON.stringify({
 			type: "RANK_UPDATE",
-			id: config3.id,
-			nickname: config3.nickname,
-			rank: config3.rank,
-			level: config3.level,
-			star: config3.star,
+			id: userInfo.id,
+			nickname: userInfo.nickname,
+			rank: userInfo.rank,
+			level: userInfo.level,
+			star: userInfo.star,
 			timestamp: Date.now(),
 		})
 	)
@@ -120,12 +134,13 @@ $Bus.on("update-own-rank", () => {
 
 // Start Round
 $Bus.on("start-round", () => {
+	let roundInfo = getRoundInfo()
 	wsProxy.value.send(
 		JSON.stringify({
 			type: "BEFORE_START",
 			id: $store.state.user.id,
-			timeCount: 15,
-			roundLimit: 12,
+			timeCount: roundInfo.beforeStartCount,
+			roundLimit: roundInfo.roundLimit,
 			timestamp: Date.now(),
 		})
 	)
@@ -133,12 +148,13 @@ $Bus.on("start-round", () => {
 
 // Next Round
 $Bus.on("next-round", ({ round }) => {
+	let roundInfo2 = getRoundInfo()
 	wsProxy.value.send(
 		JSON.stringify({
 			type: "BEFORE_ROUND",
 			id: $store.state.user.id,
 			round,
-			timeCount: 10,
+			timeCount: roundInfo2.beforeRoundCount,
 			timestamp: Date.now(),
 		})
 	)

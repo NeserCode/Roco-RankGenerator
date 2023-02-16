@@ -9,4 +9,8 @@ export const defaultConfigOptions: Config = {
 	rank: 0,
 	level: 0,
 	star: 0,
+	roundLimit: 10,
+	roundCount: 10,
+	beforeStartCount: 10,
+	beforeRoundCount: 10,
 }

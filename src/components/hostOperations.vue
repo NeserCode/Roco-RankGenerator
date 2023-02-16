@@ -38,7 +38,7 @@ const nextRoundStart = debounce(() => {
 }, 3000)
 
 const ableToStart = computed(() => {
-	return !($store.state.room.round < 12)
+	return !($store.state.room.round <= 12)
 })
 </script>
 

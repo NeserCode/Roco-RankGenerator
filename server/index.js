@@ -34,17 +34,21 @@ Socket.on('connection', (socket) => {
 					timestamp: Date.now(),
 				}))
 			}, JsonMessage.timeCount * 1000)
-		} else if (JsonMessage.type === "BEFORE_ROUND" && ROUND_SUM - 1 > 0) {
+		} else if (JsonMessage.type === "BEFORE_ROUND" && ROUND_SUM >= 0) {
 			console.log(`[WebSocket Round Start]`);
 			setTimeout(() => {
 				socket.send(JSON.stringify({
 					type: 'START_ROUND',
 					round: JsonMessage.round,
 					timestamp: Date.now(),
+					isAddon: ROUND_SUM === 0
 				}))
 			}, JsonMessage.timeCount * 1000)
 
-			ROUND_SUM--
+			if (ROUND_SUM - 1 >= 0)
+				ROUND_SUM--
+			else
+				ROUND_SUM = 0
 			console.log(`[WebSocket Round End] Leave ${ROUND_SUM} Round`);
 		}
 

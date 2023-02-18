@@ -35,8 +35,6 @@ class configStorage {
 
 	public setConfig(config: Config): void {
 		this.Config = config
-		console.log(this.Config)
-
 		fs.writeFile(this.ConfigPath, JSON.stringify(config), (err) => {
 			if (err) throw err
 		})

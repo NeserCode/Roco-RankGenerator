@@ -64,11 +64,11 @@ const wsProxy = ref<WebSocketProxy>(
 			else if (data.type === "HOST_ID") {
 				$store.commit("updateRoomId", data.hostId)
 			}
-			// // update room player list
-			// else if (data.type === "RANK") {
-			// 	// $store.commit("updateRoomPlayers", data)
-
-			// }
+			// update room player list ::: OutTime
+			else if (data.type === "RANK") {
+				// $store.commit("updateRoomPlayers", data)
+				$Bus.emit("update-join-player", data)
+			}
 			// update own rank
 			else if (data.type === "RANK_UPDATE") {
 				$Bus.emit("update-rank", data)
@@ -76,12 +76,21 @@ const wsProxy = ref<WebSocketProxy>(
 			}
 			// start round
 			else if (data.type === "BEFORE_START") {
+				let config3 = configStorager.getConfig()
+				console.log("[BEFORE_START]", data)
+
+				configStorager.setConfig({
+					...config3,
+					roundLimit: data.roundConfig.roundLimit,
+					roundCount: data.roundConfig.roundCount,
+					beforeStartCount: data.roundConfig.beforeStartCount,
+					beforeRoundCount: data.roundConfig.beforeRoundCount,
+				})
 				$Bus.emit("start-round-count", data)
 			}
 			// before round start
 			else if (data.type === "BEFORE_ROUND") {
 				console.log("[BEFORE_ROUND]", data)
-
 				$Bus.emit("next-round-count", data)
 			}
 			// start next round
@@ -93,7 +102,6 @@ const wsProxy = ref<WebSocketProxy>(
 			else if (data.type === "PLAYERS_INFO") {
 				console.log("[PLAYERS_INFO]", data)
 				$store.commit("updateRoomPlayersFromWs", data)
-				$Bus.emit("update-join-player", data)
 			}
 			// client number
 			else if (data.client !== undefined)
@@ -148,6 +156,7 @@ $Bus.on("start-round", () => {
 			id: $store.state.user.id,
 			timeCount: roundInfo.beforeStartCount,
 			roundLimit: roundInfo.roundLimit,
+			roundConfig: roundInfo,
 			timestamp: Date.now(),
 		})
 	)
@@ -168,7 +177,13 @@ $Bus.on("next-round", ({ round }) => {
 })
 
 onUnmounted(() => {
-	wsProxy.value.send(JSON.stringify({ type: "LEAVE" }))
+	wsProxy.value.send(
+		JSON.stringify({
+			...getUserInfo(),
+			type: "LEAVE",
+		})
+	)
+
 	wsProxy.value.close()
 	$Bus.off("request-join-room")
 	$Bus.off("update-join-player")

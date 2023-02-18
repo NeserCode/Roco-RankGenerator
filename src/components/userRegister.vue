@@ -106,7 +106,9 @@ const computedRank = computed(() => {
 				<span class="tip"
 					>! 与服务器相连的功能模块都使用了防抖<br />即操作存在唯一的延迟而重复操作会重置延时</span
 				>
-				<span class="tip">! 在发车过程中请不要更改段位信息</span>
+				<span class="tip"
+					>! 在发车过程中请不要更改昵称<br />请不要更改本应用配置文件<br />一般这些操作将会导致用户的身份凭证失效</span
+				>
 			</div>
 
 			<div class="room-id-input">

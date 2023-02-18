@@ -113,8 +113,6 @@ export default createStore<State>({
 			data.playerIdList.forEach((id) => {
 				const player = data.playerList.find((player) => player.id === id)
 				if (player) state.room.players.push(player)
-
-				console.log(player, state.room.players)
 			})
 		},
 		getReady(state) {

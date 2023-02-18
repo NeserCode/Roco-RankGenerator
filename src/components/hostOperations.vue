@@ -2,10 +2,11 @@
 import { debounce } from "ts-debounce"
 import { ref, computed } from "vue"
 import { useStore } from "vuex"
+import { key } from "@/state"
 
 import { $Bus } from "@/utils/Mitt"
 
-const $store = useStore()
+const $store = useStore(key)
 
 const readyText = ref("确认发车")
 

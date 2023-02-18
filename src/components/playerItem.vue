@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import { useStore } from "vuex"
+import { key } from "@/state"
 import { computed, toRefs, defineProps } from "vue"
 
 // import { $Bus } from '@/utils/Mitt'
@@ -9,7 +10,7 @@ import { Ws_RankPackage } from "@/shared/types"
 const $props = defineProps<{
 	player: Ws_RankPackage
 }>()
-const $store = useStore()
+const $store = useStore(key)
 
 const { player } = toRefs($props)
 

@@ -8,10 +8,11 @@ import { configStorager } from "@/utils/ConfigStorage"
 import { $Bus } from "@/utils/Mitt"
 import { ref, onUnmounted } from "vue"
 import { useStore } from "vuex"
+import { key } from "@/state"
 
 import type { RoundInfo, Ws_RankPackage } from "@/shared/types"
 
-const $store = useStore()
+const $store = useStore(key)
 const config = configStorager.getConfig()
 const wsUrl = new URL(`ws://${config.server}:${config.port}/base`)
 
@@ -45,17 +46,17 @@ const wsProxy = ref<WebSocketProxy>(
 			const data = JSON.parse(message.data)
 
 			// Join room
-			if (data.type === ("HOST" || "JOIN")) {
+			if (data.type === "HOST" || data.type === "JOIN") {
 				// self join room
 				if (data.id === config.id && !$store.state.isJoinedRoom) {
-					console.log("[JOIN]Join room success")
+					console.log("[JOIN_SELF]", data)
 					$store.commit("ensureJoinedRoom")
 					// send user info
 					wsProxy.value.send(JSON.stringify(getUserInfo()))
 				}
 				// other user join room
 				else if (data.id !== config.id && $store.state.isJoinedRoom) {
-					console.log("Other user join room")
+					console.log("[JOIN_OTHER]", data)
 					$store.commit("ensureJoinedRoom")
 				}
 			}
@@ -63,11 +64,11 @@ const wsProxy = ref<WebSocketProxy>(
 			else if (data.type === "HOST_ID") {
 				$store.commit("updateRoomId", data.hostId)
 			}
-			// update room player list
-			else if (data.type === "RANK") {
-				// $store.commit("updateRoomPlayers", data)
-				$Bus.emit("update-join-player", data)
-			}
+			// // update room player list
+			// else if (data.type === "RANK") {
+			// 	// $store.commit("updateRoomPlayers", data)
+
+			// }
 			// update own rank
 			else if (data.type === "RANK_UPDATE") {
 				$Bus.emit("update-rank", data)
@@ -92,6 +93,7 @@ const wsProxy = ref<WebSocketProxy>(
 			else if (data.type === "PLAYERS_INFO") {
 				console.log("[PLAYERS_INFO]", data)
 				$store.commit("updateRoomPlayersFromWs", data)
+				$Bus.emit("update-join-player", data)
 			}
 			// client number
 			else if (data.client !== undefined)

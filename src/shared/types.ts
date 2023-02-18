@@ -12,15 +12,15 @@ export type Nickname = {
 }
 
 export type RankLevel = {
-	rank: 0 | 1 | 2 | 3 | 4 | 5
-	level: 0 | 1 | 2 | 3 | 4
-	star: 0 | 1 | 2 | 3 | 4
+	rank: number
+	level: number
+	star: number
 }
 
 export type RankLimit = {
-	Rank: 0 | 1 | 2 | 3 | 4 | 5
-	Level: 0 | 1 | 2 | 3 | 4
-	Star: 0 | 1 | 2 | 3 | 4
+	Rank: number
+	Level: number
+	Star: number
 }
 
 export type RoundInfo = {
@@ -63,9 +63,9 @@ export interface Ws_TimePackage extends Ws_BasicInfoPackage {
 export interface Ws_RankPackage extends Ws_BasicInfoPackage {
 	type: "RANK" | "RANK_UPDATE"
 	nickname: string
-	rank: 0 | 1 | 2 | 3 | 4 | 5
-	level: 0 | 1 | 2 | 3 | 4
-	star: 0 | 1 | 2 | 3 | 4
+	rank: number
+	level: number
+	star: number
 }
 
 export interface Ws_BattlePackage extends Ws_BasicInfoPackage {

@@ -8,6 +8,7 @@ import SettingRound from "@/components/settingRound.vue"
 import { configStorager } from "@/utils/ConfigStorage"
 import { watch, ref } from "vue"
 import { useStore } from "vuex"
+import { key } from "@/state"
 
 import { createHmac } from "crypto"
 
@@ -19,7 +20,7 @@ import type {
 	RoundInfo,
 } from "@/shared/types"
 
-const $store = useStore()
+const $store = useStore(key)
 
 function getServerInfo(): ServerInfo {
 	return {

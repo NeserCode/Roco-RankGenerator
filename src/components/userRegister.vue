@@ -2,14 +2,17 @@
 import type { Config } from "@/shared/types"
 import { configStorager } from "@/utils/ConfigStorage"
 import { $Bus } from "@/utils/Mitt"
+
 import { debounce } from "ts-debounce"
 import { ref, onActivated, computed } from "vue"
 import { useRouter } from "vue-router"
 import { useStore } from "vuex"
+import { key as StateKey } from "@/state"
 
 const config = ref<Config>(configStorager.getConfig())
 const $router = useRouter()
-const $store = useStore()
+const $store = useStore(StateKey)
+
 onActivated(() => {
 	config.value = configStorager.getConfig()
 })
@@ -21,7 +24,7 @@ function gotoSetting() {
 const JoinTheRoom = debounce(() => {
 	$Bus.emit("request-join-room", {
 		id: config.value.id,
-		type: "HOST",
+		type: key.value == "" ? "JOIN" : "HOST",
 		timestamp: Date.now(),
 		hostKey: key.value,
 	})

@@ -1,6 +1,9 @@
 import { createStore } from "vuex"
 import { $Bus } from "@/utils/Mitt"
 
+import { InjectionKey } from "vue"
+import type { Store } from "vuex"
+
 import type {
 	RankLevel,
 	Ws_ClientSumPackage,
@@ -10,7 +13,24 @@ import type {
  * 创建仓库和导出
  */
 
-export default createStore({
+export interface State {
+	isJoinedRoom: boolean
+	isHost: boolean
+	isReady: boolean
+	isAddon: boolean
+	user: Ws_RankPackage
+	room: {
+		id: string
+		round: number
+		players: Ws_RankPackage[]
+		clientSum: number
+	}
+}
+
+// 定义 injection key
+export const key: InjectionKey<Store<State>> = Symbol()
+
+export default createStore<State>({
 	state: {
 		isJoinedRoom: false,
 		isHost: false,
@@ -22,19 +42,13 @@ export default createStore({
 			rank: 0,
 			level: 0,
 			star: 0,
+			timestamp: -1,
+			type: "RANK",
 		},
 		room: {
 			id: "",
 			round: 0,
-			players: [
-				{
-					id: "",
-					nickname: "",
-					rank: 0,
-					level: 0,
-					star: 0,
-				},
-			],
+			players: [],
 			clientSum: 0,
 		},
 	},
@@ -83,13 +97,7 @@ export default createStore({
 			state.user.star = rank.star
 		},
 		updateRoomPlayers(state, player: Ws_RankPackage) {
-			state.room.players.push({
-				id: player.id,
-				nickname: player.nickname,
-				rank: player.rank,
-				level: player.level,
-				star: player.star,
-			})
+			state.room.players.push(player)
 		},
 		updateClientSum(state, data: Ws_ClientSumPackage) {
 			state.room.clientSum = data.client
@@ -104,15 +112,9 @@ export default createStore({
 			state.room.players = []
 			data.playerIdList.forEach((id) => {
 				const player = data.playerList.find((player) => player.id === id)
-				if (player) {
-					state.room.players.push({
-						id: player.id,
-						nickname: player.nickname,
-						rank: player.rank,
-						level: player.level,
-						star: player.star,
-					})
-				}
+				if (player) state.room.players.push(player)
+
+				console.log(player, state.room.players)
 			})
 		},
 		getReady(state) {

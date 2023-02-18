@@ -2,9 +2,10 @@
 import { SettingOptionToken } from "@/tokens/settingOption"
 import { inject } from "vue"
 import { useStore } from "vuex"
+import { key } from "@/state"
 
 const { boundValue } = inject(SettingOptionToken, {})
-const $store = useStore()
+const $store = useStore(key)
 </script>
 
 <template>

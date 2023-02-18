@@ -4,6 +4,7 @@ import { useStore } from "vuex"
 import { ref, computed } from "vue"
 import { $Bus } from "@/utils/Mitt"
 import { configStorager } from "@/utils/ConfigStorage"
+import { key } from "@/state"
 
 import type {
 	Ws_RankPackage,
@@ -12,7 +13,7 @@ import type {
 	BasicMessage,
 } from "@/shared/types"
 
-const $store = useStore()
+const $store = useStore(key)
 
 // Update Client Number
 $Bus.on("update-client-number", (data) => {
@@ -21,8 +22,6 @@ $Bus.on("update-client-number", (data) => {
 
 // Join Room Message
 $Bus.on("update-join-player", (data) => {
-	$store.commit("updateRoomPlayers", data)
-
 	welcomeJoinPlayer(data)
 	scrolltoBottom()
 })
@@ -35,7 +34,7 @@ $Bus.on("ensure-host-room", (data) => {
 
 // Update player rank
 $Bus.on("update-rank", () => {
-	players.value = new Set($store.state.room.players.slice(1))
+	players.value = $store.state.room.players
 })
 
 const messageQueue = ref<BasicMessage[]>([])
@@ -45,7 +44,7 @@ const oneWord = ref("")
 function welcomeJoinPlayer(data: Ws_RankPackage) {
 	welcomeWord.value = `欢迎 ${data.nickname} 加入了房间`
 
-	players.value = new Set($store.state.room.players.slice(1))
+	players.value = $store.state.room.players
 	messageQueue.value.push({
 		type: "JOIN",
 		message: welcomeWord.value,
@@ -62,9 +61,7 @@ function noticeHostPlayer(data: Ws_HostPackage) {
 	})
 }
 
-const players = ref<Set<Ws_RankPackage[]>>(
-	new Set($store.state.room.players.slice(1))
-)
+const players = ref<Ws_RankPackage[]>($store.state.room.players)
 
 const getComputedTime = (timestamp: number) => {
 	// fix zero
@@ -110,17 +107,16 @@ function noticeStartRound(data: Ws_TimePackage) {
 					message: oneWord.value,
 					timestamp: Date.now(),
 				})
-				scrolltoBottom()
 			} else if (data.timeCount === 0) {
-				oneWord.value = `道路千万条，安全第一条。行车不规范，亲友两行泪。请注意每回合的倒计时哦！`
+				oneWord.value = `开始发车啦！请注意每回合的倒计时哦！`
 				messageQueue.value.push({
 					type: "BEFORE_START",
 					message: oneWord.value,
 					timestamp: Date.now(),
 				})
-				scrolltoBottom()
 			}
 		} else clearInterval(interval)
+		scrolltoBottom()
 	}, 1000)
 }
 

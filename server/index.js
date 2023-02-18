@@ -63,7 +63,7 @@ Socket.on('connection', (socket) => {
 
 			socket.send(JSON.stringify({
 				type: 'PLAYERS_INFO',
-				timstamp: Date.now(),
+				timestamp: Date.now(),
 				playerIdList: [...PlayerIdList],
 				playerList: PlayerList
 			}))
@@ -81,7 +81,7 @@ Socket.on('connection', (socket) => {
 
 		Socket.clients.forEach((c) => {
 			c.send(JSON.stringify({
-				timstamp: Date.now(),
+				timestamp: Date.now(),
 				client: index
 			}))
 		});
@@ -93,7 +93,7 @@ Socket.on('connection', (socket) => {
 		socket.send('Heartbeat')
 		if (HOST_ID) socket.send(JSON.stringify({
 			type: 'HOST_ID',
-			timstamp: Date.now(),
+			timestamp: Date.now(),
 			hostId: HOST_ID
 		}))
 		// console.log(`[WebSocket Sent] Heartbeat`);

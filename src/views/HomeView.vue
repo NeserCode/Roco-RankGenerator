@@ -185,10 +185,6 @@ onUnmounted(() => {
 	)
 
 	wsProxy.value.close()
-	$Bus.off("request-join-room")
-	$Bus.off("update-join-player")
-	$Bus.off("update-client-number")
-	$Bus.off("ensure-host-room")
 })
 </script>
 

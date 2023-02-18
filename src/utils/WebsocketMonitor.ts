@@ -1,9 +1,11 @@
 export class WebSocketProxy {
+	state
 	url
 	Socket: WebSocket | undefined
 
 	constructor(url: URL, onMessage: (e: MessageEvent) => void) {
 		this.url = url
+		this.state = 0
 		this.CreateSocket(onMessage)
 	}
 
@@ -18,14 +20,17 @@ export class WebSocketProxy {
 
 	private handleOpen(e: Event) {
 		console.log("WebSocket connected", e)
+		this.state = 1
 	}
 
 	private handleClose(e: Event) {
 		console.log("WebSocket disconnected", e)
+		this.state = 0
 	}
 
 	private handleError(e: Event) {
 		console.log("WebSocket error", e)
+		this.state = -1
 	}
 
 	public send(data: string) {

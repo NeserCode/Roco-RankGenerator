@@ -1,5 +1,7 @@
 <script lang="ts" setup>
 import PlayerItem from "./playerItem.vue"
+import PlayerSearch from "./playerSearch.vue"
+
 import { useStore } from "vuex"
 import { ref, computed } from "vue"
 import { $Bus } from "@/utils/Mitt"
@@ -189,20 +191,14 @@ $Bus.on("next-round-count", (data) => {
 					<span class="sum">已准备 {{ $store.state.room.clientSum }}</span>
 				</div>
 				<div class="list">
-					<input
-						type="search"
-						name="search-input-player"
-						id="player-search"
-						list="player-search-data-list"
-					/>
+					<player-search />
 					<div class="item" v-for="player in players" :key="player.id">
 						<input
 							type="radio"
 							name="player"
-							:value="player.id"
+							:value="player.nickname"
 							:id="player.nickname"
 							v-model="whoChecked"
-							disabled
 						/>
 						<label :for="player.nickname" class="label">
 							<player-item
@@ -211,13 +207,6 @@ $Bus.on("next-round-count", (data) => {
 							/>
 						</label>
 					</div>
-					<datalist id="player-search-data-list">
-						<option
-							v-for="player in players"
-							:value="player.nickname"
-							:key="player.id"
-						/>
-					</datalist>
 				</div>
 			</div>
 			<div class="screen">
@@ -325,15 +314,5 @@ $Bus.on("next-round-count", (data) => {
 
 .player-list input[type="radio"] + .label .isChecked {
 	@apply bg-green-400 dark:bg-blue-400;
-}
-
-/* Search input style */
-.player-list input[type="search"] {
-	@apply inline-flex flex-row items-center justify-center w-full py-1 px-1.5
-	bg-transparent text-base;
-}
-
-.player-list input[type="search"]:focus {
-	@apply outline-none;
 }
 </style>

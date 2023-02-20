@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import PlayerItem from "./playerItem.vue"
-import PlayerSearch from "./playerSearch.vue"
+import MessageDialog from "./messageDialog.vue"
 
 import { useStore } from "vuex"
 import { ref, computed } from "vue"
@@ -13,6 +13,7 @@ import type {
 	Ws_HostPackage,
 	Ws_TimePackage,
 	BasicMessage,
+	Notification,
 } from "@/shared/types"
 
 const $store = useStore(key)
@@ -180,6 +181,27 @@ $Bus.on("next-round-count", (data) => {
 	noticeBeforeRound(data)
 	scrolltoBottom()
 })
+
+const noti_test = ref<Notification>({
+	type: "NOTIFY",
+	title: "测试标题",
+	message: [
+		'欢迎来到 "狼人杀" 游戏房间',
+		"请在下方输入你的昵称",
+		"点击右上角的按钮可以设置游戏配置",
+		"点击右下角的按钮可以查看游戏规则",
+		"点击左下角的按钮可以查看游戏历史",
+		"点击左上角的按钮可以查看游戏排行榜",
+	],
+	timestamp: Date.now(),
+	options: [
+		{
+			type: "NOTIFY_OPTIONS_DANGER",
+			text: "确定",
+			withClose: true,
+		},
+	],
+})
 </script>
 
 <template>
@@ -191,7 +213,7 @@ $Bus.on("next-round-count", (data) => {
 					<span class="sum">已准备 {{ $store.state.room.clientSum }}</span>
 				</div>
 				<div class="list">
-					<player-search />
+					<message-dialog :text-notifaication="noti_test" />
 					<div class="item" v-for="player in players" :key="player.id">
 						<input
 							type="radio"

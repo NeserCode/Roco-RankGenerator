@@ -92,3 +92,24 @@ export interface BasicMessage {
 	timestamp: number
 	message: string
 }
+
+export interface BasicNotification {
+	type: "NOTIFY"
+	timestamp: number
+	message: string[]
+	title: string
+}
+
+export interface NotificationOption {
+	type:
+		| "NOTIFY_OPTIONS_PRIMARY"
+		| "NOTIFY_OPTIONS_DANGER"
+		| "NOTIFY_OPTIONS_OTHER"
+	callback?: () => void
+	text: string
+	withClose?: boolean
+}
+
+export interface Notification extends BasicNotification {
+	options: NotificationOption[]
+}

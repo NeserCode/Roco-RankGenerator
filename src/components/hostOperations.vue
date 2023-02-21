@@ -68,7 +68,7 @@ function closeDialog() {
 			</template>
 			<template #details>details</template>
 			<template #options>
-				<button class="operation" @click="closeDialog">确认</button>
+				<button class="btn primary" @click="closeDialog">确认</button>
 			</template>
 		</container-dialog>
 	</div>
@@ -90,6 +90,20 @@ button.operation {
 button:disabled {
 	@apply bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-500
 	cursor-not-allowed;
+}
+
+/* inner dialog */
+.btn {
+	@apply inline-flex justify-center px-4 py-2 text-sm font-medium 
+	text-blue-900 bg-blue-100 border border-transparent
+	rounded-md hover:bg-blue-200 focus:outline-none select-none
+	focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2;
+}
+.btn.primary {
+	@apply bg-blue-500 text-white;
+}
+.btn.danger {
+	@apply bg-red-500 text-white;
 }
 
 .state {

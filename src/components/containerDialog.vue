@@ -90,21 +90,4 @@ $Bus.on("dialog-container-close", () => {
 .dialog-title {
 	@apply flex items-center py-2 text-lg font-medium leading-6;
 }
-
-.btn {
-	@apply inline-flex justify-center px-4 py-2 text-sm font-medium 
-	text-blue-900 bg-blue-100 border border-transparent
-	rounded-md hover:bg-blue-200 focus:outline-none select-none
-	focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2;
-}
-.btn.NOTIFY_OPTIONS_PRIMARY {
-	@apply bg-blue-500 text-white;
-}
-.btn.NOTIFY_OPTIONS_DANGER {
-	@apply bg-red-500 text-white;
-}
-
-.options-container {
-	@apply flex flex-wrap justify-between items-center mt-4;
-}
 </style>

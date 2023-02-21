@@ -184,19 +184,12 @@ $Bus.on("next-round-count", (data) => {
 
 const noti_test = ref<Notification>({
 	type: "NOTIFY",
-	title: "测试标题",
-	message: [
-		'欢迎来到 "狼人杀" 游戏房间',
-		"请在下方输入你的昵称",
-		"点击右上角的按钮可以设置游戏配置",
-		"点击右下角的按钮可以查看游戏规则",
-		"点击左下角的按钮可以查看游戏历史",
-		"点击左上角的按钮可以查看游戏排行榜",
-	],
+	title: "Happy Game",
+	message: ["Weclome to use this software for Roco Kingdoms Rank"],
 	timestamp: Date.now(),
 	options: [
 		{
-			type: "NOTIFY_OPTIONS_DANGER",
+			type: "NOTIFY_OPTIONS_PRIMARY",
 			text: "确定",
 			withClose: true,
 		},
@@ -209,7 +202,7 @@ const noti_test = ref<Notification>({
 		<div class="room-container">
 			<div class="player-list">
 				<div class="top-info">
-					<span class="sum">🏃‍♂️ {{ $store.state.room.clientSum }}</span>
+					<span class="sum">🏃‍♂️ 玩家数 {{ $store.state.room.clientSum }}</span>
 				</div>
 				<div class="list">
 					<message-dialog :text-notifaication="noti_test" />
@@ -252,7 +245,7 @@ const noti_test = ref<Notification>({
 	border-2 border-slate-300 dark:border-slate-500;
 }
 .player-list {
-	@apply w-1/4 rounded-l;
+	@apply w-1/4 border-r-0;
 }
 
 .player-list .top-info {
@@ -269,7 +262,7 @@ const noti_test = ref<Notification>({
 }
 
 .screen {
-	@apply w-1/2 rounded-r;
+	@apply w-1/2;
 }
 
 /* Message */

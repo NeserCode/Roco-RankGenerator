@@ -18,13 +18,9 @@ export const $Bus = Mitt<{
 	"update-rank": Ws_RankPackage
 	"start-round": void
 	"start-round-count": Ws_TimePackage
-	"next-round": {
-		round: number
-	}
-	"next-round-count": Ws_TimePackage & {
-		round: number
-	}
-	"update-ws-state": {
-		state: number
-	}
+	"next-round": { round: number }
+	"next-round-count": Ws_TimePackage & { round: number }
+	"update-ws-state": { state: number }
+	"dialog-container-open": void
+	"dialog-container-close": void
 }>()

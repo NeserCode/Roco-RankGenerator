@@ -1,4 +1,5 @@
 <script lang="ts" setup>
+import ContainerDialog from "./containerDialog.vue"
 import { debounce } from "ts-debounce"
 import { ref } from "vue"
 import { useStore } from "vuex"
@@ -56,6 +57,13 @@ $Bus.on("update-ws-state", (data) => {
 				更新段位
 			</button>
 		</div>
+		<container-dialog>
+			<template #title>
+				<span>正在进行第 {{ $store.state.room.round }} 回合</span>
+			</template>
+			<template #details>details</template>
+			<template #options>options</template>
+		</container-dialog>
 	</div>
 </template>
 

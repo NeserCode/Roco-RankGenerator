@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, toRefs, defineEmits, defineProps, watch } from "vue"
+import { ref } from "vue"
 import {
 	TransitionRoot,
 	TransitionChild,
@@ -9,37 +9,21 @@ import {
 	DialogDescription,
 } from "@headlessui/vue"
 
-import type { Notification } from "@/shared/types"
+import { $Bus } from "@/utils/Mitt"
 
-const $emit = defineEmits(["open", "close"])
+const isOpen = ref(false)
 
-const $props = defineProps<{
-	textNotifaication?: Notification
-}>()
-const { textNotifaication } = toRefs($props)
-
-const isOpen = ref(true)
-
-watch(isOpen, (value) => {
-	if (value) $emit("open")
-	else $emit("close")
-})
-
-function optionAction(callback?: () => void, withClose?: boolean) {
-	if (callback) callback()
-
-	if (textNotifaication?.value?.options?.length === 1) closeModalWindow()
-	else if (withClose) closeModalWindow()
-}
-
-function closeModalWindow() {
+$Bus.on("dialog-container-open", () => {
 	isOpen.value = false
-}
+})
+$Bus.on("dialog-container-close", () => {
+	isOpen.value = true
+})
 </script>
 
 <template>
 	<TransitionRoot appear :show="isOpen" as="template">
-		<Dialog as="div" class="dialog" @close="closeModalWindow">
+		<Dialog as="div" class="dialog">
 			<TransitionChild
 				as="template"
 				enter="duration-300 ease-out"
@@ -65,26 +49,12 @@ function closeModalWindow() {
 					>
 						<DialogPanel class="dialog-panel">
 							<DialogTitle as="h3" class="dialog-title">
-								{{ textNotifaication?.title }}
+								<slot name="title"></slot>
 							</DialogTitle>
-							<DialogDescription class="dialog-details">
-								<p v-for="item in textNotifaication?.message" :key="item">
-									{{ item }}
-								</p>
+							<DialogDescription as="div" class="dialog-details">
+								<slot name="details"></slot>
 							</DialogDescription>
-
-							<div class="options-container">
-								<button
-									v-for="option in textNotifaication?.options"
-									:key="option?.text"
-									type="button"
-									class="btn"
-									:class="option?.type"
-									@click="optionAction(option?.callback, option?.withClose)"
-								>
-									{{ option?.text }}
-								</button>
-							</div>
+							<slot name="options"></slot>
 						</DialogPanel>
 					</TransitionChild>
 				</div>

@@ -60,7 +60,7 @@ const wheatherHost = computed(() => {
 	<div class="player-item">
 		<div class="player-item-container">
 			<div class="player-item-nickname">
-				<span v-if="wheatherHost" class="host">房主</span>
+				<span v-if="wheatherHost" class="host">★房主</span>
 				{{ player.nickname }}
 			</div>
 			<div class="player-item-rank">{{ computedRank }}</div>
@@ -83,7 +83,7 @@ const wheatherHost = computed(() => {
 }
 
 .player-item-nickname .host {
-	@apply inline-block justify-center items-center text-sm px-1 rounded-full
+	@apply inline-block justify-center items-center text-sm pl-1 pr-1.5 py-px rounded-full
   bg-slate-600 text-slate-100 dark:bg-slate-200 dark:text-slate-700 select-none;
 }
 
@@ -93,6 +93,6 @@ const wheatherHost = computed(() => {
 }
 
 .player-item-rank {
-	@apply text-slate-500 text-sm;
+	@apply text-slate-500 dark:text-slate-400 text-sm;
 }
 </style>

@@ -24,4 +24,7 @@ export const $Bus = Mitt<{
 	"next-round-count": Ws_TimePackage & {
 		round: number
 	}
+	"update-ws-state": {
+		state: number
+	}
 }>()

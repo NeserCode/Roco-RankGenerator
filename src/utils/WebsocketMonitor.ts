@@ -1,11 +1,16 @@
+import { $Bus } from "./Mitt"
+
 export class WebSocketProxy {
-	state
+	state = -1
 	url
 	Socket: WebSocket | undefined
 
 	constructor(url: URL, onMessage: (e: MessageEvent) => void) {
 		this.url = url
 		this.state = 0
+		$Bus.emit("update-ws-state", {
+			state: this.state,
+		})
 		this.CreateSocket(onMessage)
 	}
 
@@ -21,16 +26,25 @@ export class WebSocketProxy {
 	private handleOpen(e: Event) {
 		console.log("WebSocket connected", e)
 		this.state = 1
+		$Bus.emit("update-ws-state", {
+			state: this.state,
+		})
 	}
 
 	private handleClose(e: Event) {
 		console.log("WebSocket disconnected", e)
 		this.state = 0
+		$Bus.emit("update-ws-state", {
+			state: this.state,
+		})
 	}
 
 	private handleError(e: Event) {
 		console.log("WebSocket error", e)
 		this.state = -1
+		$Bus.emit("update-ws-state", {
+			state: this.state,
+		})
 	}
 
 	public send(data: string) {

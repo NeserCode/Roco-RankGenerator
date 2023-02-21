@@ -113,21 +113,6 @@ const wsProxy = ref<WebSocketProxy>(
 
 // Request join room Listener
 $Bus.on("request-join-room", (data) => {
-	// Test player data
-	for (let i = 0; i < 5; i++) {
-		wsProxy.value.send(
-			JSON.stringify({
-				type: "RANK",
-				id: `${i}`,
-				nickname: `测试${i}`,
-				rank: 3,
-				level: 2,
-				star: 1,
-				timestamp: Date.now(),
-			})
-		)
-	}
-
 	wsProxy.value.send(JSON.stringify(data))
 })
 

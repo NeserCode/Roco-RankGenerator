@@ -209,25 +209,12 @@ const noti_test = ref<Notification>({
 		<div class="room-container">
 			<div class="player-list">
 				<div class="top-info">
-					<span class="sum">玩家数 {{ $store.state.room.clientSum }}</span>
-					<span class="sum">已准备 {{ $store.state.room.clientSum }}</span>
+					<span class="sum">🏃‍♂️ {{ $store.state.room.clientSum }}</span>
 				</div>
 				<div class="list">
 					<message-dialog :text-notifaication="noti_test" />
 					<div class="item" v-for="player in players" :key="player.id">
-						<input
-							type="radio"
-							name="player"
-							:value="player.nickname"
-							:id="player.nickname"
-							v-model="whoChecked"
-						/>
-						<label :for="player.nickname" class="label">
-							<player-item
-								:player="player"
-								:class="[computedClass(player.id)]"
-							/>
-						</label>
+						<player-item :player="player" :class="[computedClass(player.id)]" />
 					</div>
 				</div>
 			</div>
@@ -319,22 +306,5 @@ const noti_test = ref<Notification>({
 
 .message-container .BEFORE_START {
 	@apply text-red-900 dark:text-red-300;
-}
-
-/* radio style */
-.player-list input[type="radio"] {
-	@apply hidden;
-}
-
-.player-list input[type="radio"] + .label {
-	@apply inline-flex flex-row items-center justify-center w-full
-	cursor-pointer;
-}
-.player-list input[type="radio"]:disabled + .label {
-	@apply cursor-auto;
-}
-
-.player-list input[type="radio"] + .label .isChecked {
-	@apply bg-green-400 dark:bg-blue-400;
 }
 </style>

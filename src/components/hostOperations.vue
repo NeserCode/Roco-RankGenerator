@@ -1,6 +1,6 @@
 <script lang="ts" setup>
 import { debounce } from "ts-debounce"
-import { ref, computed } from "vue"
+import { ref } from "vue"
 import { useStore } from "vuex"
 import { key } from "@/state"
 
@@ -8,21 +8,7 @@ import { $Bus } from "@/utils/Mitt"
 
 const $store = useStore(key)
 
-const readyText = ref("确认发车")
-
-const toggleReadyState = debounce(() => {
-	if (!$store.state.isReady && $store.state.isJoinedRoom) {
-		$store.commit("getReady")
-		readyText.value = "取消确认"
-	} else {
-		$store.commit("cancelReady")
-		readyText.value = "确认发车"
-	}
-}, 2000)
-
-const btnClass = computed(() => {
-	return !$store.state.isReady ? "primary" : "danger"
-})
+const readyText = ref("等待连接服务器")
 
 const updateOwnRank = debounce(() => {
 	$Bus.emit("update-own-rank")
@@ -37,18 +23,21 @@ const nextRoundStart = debounce(() => {
 		round: $store.state.room.round,
 	})
 }, 3000)
+
+// ws state
+$Bus.on("update-ws-state", (data) => {
+	if (data.state === 1) readyText.value = "已连接服务器"
+	else if (data.state === -1) readyText.value = "连接服务器时出错"
+	else if (data.state === 0) readyText.value = "与服务器断开连接"
+})
 </script>
 
 <template>
 	<div class="host-operations">
 		<div class="main">
-			<button
-				:class="['operation', btnClass]"
-				@click="toggleReadyState"
-				:disabled="!$store.state.isJoinedRoom"
-			>
+			<span class="state">
 				{{ readyText }}
-			</button>
+			</span>
 			<button class="operation" v-if="$store.state.isHost" @click="startRound">
 				开始发车
 			</button>
@@ -74,6 +63,7 @@ const nextRoundStart = debounce(() => {
 .main {
 	@apply inline-flex items-center justify-evenly w-full flex-wrap;
 }
+
 /* button style */
 button.operation {
 	@apply relative w-24 py-0.5 px-1 mx-0.5 my-2 text-center border-2 border-gray-300 bg-gray-200
@@ -82,14 +72,14 @@ button.operation {
   transition-all duration-300 ease-in-out select-none;
 }
 
-button.primary {
-	@apply bg-blue-500 dark:bg-blue-500 text-gray-200 dark:text-gray-200;
-}
-button.danger {
-	@apply bg-red-500 dark:bg-red-500 text-gray-200 dark:text-gray-200;
-}
 button:disabled {
 	@apply bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-500
 	cursor-not-allowed;
+}
+
+.state {
+	@apply flex items-center justify-center px-2
+	text-gray-500 dark:text-gray-500 text-sm
+	select-none;
 }
 </style>

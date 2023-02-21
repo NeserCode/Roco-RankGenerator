@@ -66,7 +66,13 @@ function closeDialog() {
 			<template #title>
 				<span>正在进行第 {{ $store.state.room.round }} 回合</span>
 			</template>
-			<template #details>details</template>
+			<template #details>
+				<p>选择你的对手，并根据双方的最近胜负决定本回合自己的胜负</p>
+				<p>
+					若双方在下一个回合开始前没有选择或者双方对于胜负有分歧，该次比赛将不会有记录（显示为未定胜负）。
+				</p>
+				<p>但自己的选择只会影响到自己的最近胜负。同样，你的对手也是如此。</p>
+			</template>
 			<template #options>
 				<button class="btn primary" @click="closeDialog">确认</button>
 			</template>

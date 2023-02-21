@@ -6,6 +6,7 @@ import { useStore } from "vuex"
 import { key } from "@/state"
 
 import { $Bus } from "@/utils/Mitt"
+import { buildSlots } from "@vue/compiler-core"
 
 const $store = useStore(key)
 
@@ -31,6 +32,10 @@ $Bus.on("update-ws-state", (data) => {
 	else if (data.state === -1) readyText.value = "连接服务器时出错"
 	else if (data.state === 0) readyText.value = "与服务器断开连接"
 })
+
+function closeDialog() {
+	$Bus.emit("dialog-container-close")
+}
 </script>
 
 <template>
@@ -62,7 +67,9 @@ $Bus.on("update-ws-state", (data) => {
 				<span>正在进行第 {{ $store.state.room.round }} 回合</span>
 			</template>
 			<template #details>details</template>
-			<template #options>options</template>
+			<template #options>
+				<button class="operation" @click="closeDialog">确认</button>
+			</template>
 		</container-dialog>
 	</div>
 </template>

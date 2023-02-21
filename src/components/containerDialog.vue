@@ -14,10 +14,10 @@ import { $Bus } from "@/utils/Mitt"
 const isOpen = ref(false)
 
 $Bus.on("dialog-container-open", () => {
-	isOpen.value = false
+	isOpen.value = true
 })
 $Bus.on("dialog-container-close", () => {
-	isOpen.value = true
+	isOpen.value = false
 })
 </script>
 

@@ -142,9 +142,11 @@ function noticeBeforeRound(
 	}
 ) {
 	if ($store.state.isAddon)
-		oneWord.value = `第 ${data.round} 回合 [加时赛] 发车倒计时: ${data.timeCount} 秒`
+		oneWord.value = `第 ${data.round + 1} 回合 [加时赛] 发车倒计时: ${
+			data.timeCount
+		} 秒`
 	else
-		oneWord.value = `第 ${data.round}/${
+		oneWord.value = `第 ${data.round + 1}/${
 			getRoundInfo().roundLimit
 		} 回合发车倒计时: ${data.timeCount} 秒`
 	messageQueue.value.push({
@@ -166,6 +168,9 @@ function noticeBeforeRound(
 				})
 			} else if (data.timeCount === 0) {
 				oneWord.value = `请开始匹配`
+
+				$Bus.emit("dialog-container-open")
+
 				messageQueue.value.push({
 					type: "BEFORE_ROUND",
 					message: oneWord.value,

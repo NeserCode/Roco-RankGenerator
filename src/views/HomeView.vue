@@ -91,11 +91,11 @@ const wsProxy = ref<WebSocketProxy>(
 			// before round start
 			else if (data.type === "BEFORE_ROUND") {
 				console.log("[BEFORE_ROUND]", data)
+				$store.commit("nextRound")
 				$Bus.emit("next-round-count", data)
 			}
 			// start next round
 			else if (data.type === "START_ROUND") {
-				$store.commit("nextRound")
 				if (data.isAddon) $store.commit("ensureAddon")
 			}
 			// update players info

@@ -190,12 +190,17 @@ $Bus.on("next-round-count", (data) => {
 const noti_test = ref<Notification>({
 	type: "NOTIFY",
 	title: "Happy Game",
-	message: ["Weclome to use this software for Roco Kingdoms Rank"],
+	message: [
+		"Welcome to use this software for Roco Kingdoms Rank.",
+		"Notice that this software is BETA version.",
+		"Please report any bugs to the developer by a screenshot and data in Devtool (Ctrl+E).",
+		"Thank you for your support :)",
+	],
 	timestamp: Date.now(),
 	options: [
 		{
 			type: "NOTIFY_OPTIONS_PRIMARY",
-			text: "确定",
+			text: "Yes",
 			withClose: true,
 		},
 	],

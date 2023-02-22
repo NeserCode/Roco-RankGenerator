@@ -6,7 +6,6 @@ import { useStore } from "vuex"
 import { key } from "@/state"
 
 import { $Bus } from "@/utils/Mitt"
-import { buildSlots } from "@vue/compiler-core"
 
 const $store = useStore(key)
 
@@ -69,12 +68,18 @@ function closeDialog() {
 			<template #details>
 				<p>选择你的对手，并根据双方的最近胜负决定本回合自己的胜负</p>
 				<p>
-					若双方在下一个回合开始前没有选择或者双方对于胜负有分歧，该次比赛将不会有记录（显示为未定胜负）。
+					若双方在下一个回合开始前没有选择或者双方对于胜负有分歧，该次比赛将由对手的决定记录比分。
 				</p>
-				<p>但自己的选择只会影响到自己的最近胜负。同样，你的对手也是如此。</p>
+				<p>但自己的选择只会影响到对手的最近胜负。同样，你的对手也是如此。</p>
+				<p>
+					若双方没有配对成功，即选择了错误的对手，本场比赛将不会有记录（显示为未定胜负）
+				</p>
 			</template>
 			<template #options>
-				<button class="btn primary" @click="closeDialog">确认</button>
+				<div class="options">
+					<button class="btn primary" @click="closeDialog">选择胜利</button>
+					<button class="btn primary" @click="closeDialog">选择认输</button>
+				</div>
 			</template>
 		</container-dialog>
 	</div>
@@ -99,6 +104,13 @@ button:disabled {
 }
 
 /* inner dialog */
+.options {
+	@apply flex items-center w-full pt-2;
+}
+.options .btn {
+	@apply mr-2;
+}
+
 .btn {
 	@apply inline-flex justify-center px-4 py-2 text-sm font-medium 
 	text-blue-900 bg-blue-100 border border-transparent

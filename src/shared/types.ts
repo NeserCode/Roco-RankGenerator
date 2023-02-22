@@ -61,7 +61,7 @@ export interface Ws_TimePackage extends Ws_BasicInfoPackage {
 }
 
 export interface Ws_RankPackage extends Ws_BasicInfoPackage {
-	type: "RANK" | "RANK_UPDATE"
+	type: "RANK" | "RANK_UPDATE" | "SPECIAL_RANK"
 	nickname: string
 	rank: number
 	level: number

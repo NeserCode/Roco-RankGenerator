@@ -69,15 +69,15 @@ $Bus.on("dialog-container-close", () => {
 }
 .dialog-backdrop {
 	@apply fixed inset-0 bg-black dark:bg-white
-	bg-opacity-50 dark:bg-opacity-20;
+	bg-opacity-50 dark:bg-opacity-20 cursor-not-allowed;
 }
 .dialog-panel {
 	@apply w-full max-w-md p-6 overflow-hidden text-left
 	align-middle transition-all transform
-	bg-gray-50 dark:bg-gray-800 shadow-xl rounded-2xl;
+	bg-gray-50 dark:bg-gray-800 shadow-xl rounded-2xl cursor-auto;
 }
 .dialog-warpper-main {
-	@apply fixed inset-0 overflow-hidden;
+	@apply fixed inset-0 overflow-hidden cursor-not-allowed;
 }
 .dialog-warpper {
 	@apply flex items-center justify-center min-h-full p-4 text-center;

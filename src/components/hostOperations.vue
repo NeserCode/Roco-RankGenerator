@@ -1,5 +1,6 @@
 <script lang="ts" setup>
 import ContainerDialog from "./containerDialog.vue"
+import RankHelper from "./rankHelper.vue"
 import { debounce } from "ts-debounce"
 import { ref, computed, watch } from "vue"
 import { useStore } from "vuex"
@@ -164,12 +165,13 @@ watch(selectedPlayer, loger)
 				<p>
 					若双方在下一个回合开始前没有选择或者双方对于胜负有分歧，该次比赛将由对手的决定记录比分。
 				</p>
-				<p>但自己的选择只会影响到对手的最近胜负。同样，你的对手也是如此。</p>
+				<p>自己的选择只会影响到对手的最近胜负。同样，你的对手也是如此。</p>
 				<p>
 					若双方没有配对成功，即选择了错误的对手，本场比赛将不会有记录（显示为未定胜负）
 				</p>
 			</template>
 			<template #options>
+				<rank-helper />
 				<div class="options">
 					<button class="btn primary" @click="closeDialog">选择胜利</button>
 					<button class="btn primary" @click="closeDialog">选择认输</button>

@@ -171,7 +171,7 @@ watch(selectedPlayer, loger)
 				</p>
 			</template>
 			<template #options>
-				<rank-helper />
+				<rank-helper :query="selectedPlayer" />
 				<div class="options">
 					<button class="btn primary" @click="closeDialog">选择胜利</button>
 					<button class="btn primary" @click="closeDialog">选择认输</button>

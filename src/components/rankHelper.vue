@@ -1,14 +1,31 @@
 <script lang="ts" setup>
 import { CloudArrowDownIcon } from "@heroicons/vue/20/solid"
 
-import { ref, computed } from "vue"
+import { ref, computed, defineProps, toRefs, watch } from "vue"
+
+import { $Bus } from "@/utils/Mitt"
+
+import type { Ws_RankPackage } from "@/shared/types"
+
+const $props = defineProps<{
+	query: Ws_RankPackage
+}>()
+const { query } = toRefs($props)
+
+watch(query, (player: Ws_RankPackage) => {
+	$Bus.emit("query-rank-data", { id: player.id })
+})
 
 const loadingState = ref(0)
-const loadingText = ref("正在加载排名数据")
+const loadingText = ref("正在等待选定对手")
 
 const info_test = ref(["√", "×", "×", "×", "√"])
 const computedLoading = computed(() => {
 	return loadingState.value !== 0
+})
+
+$Bus.on("query-rank-data-reply", (data) => {
+	console.log(data)
 })
 </script>
 

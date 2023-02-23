@@ -6,6 +6,7 @@ import type {
 	Ws_RankPackage,
 	Ws_HostPackage,
 	Ws_TimePackage,
+	Ws_BattleInfoPackage,
 } from "@/shared/types"
 
 export const $Bus = Mitt<{
@@ -23,4 +24,6 @@ export const $Bus = Mitt<{
 	"update-ws-state": { state: number }
 	"dialog-container-open": void
 	"dialog-container-close": void
+	"query-rank-data": { id: string }
+	"query-rank-data-reply": Ws_BattleInfoPackage[]
 }>()

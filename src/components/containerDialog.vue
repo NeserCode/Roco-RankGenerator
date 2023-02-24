@@ -85,9 +85,9 @@ $Bus.on("dialog-container-close", () => {
 
 .dialog-details {
 	@apply flex flex-col max-h-64 overflow-y-auto
-	text-sm text-gray-400;
+	text-sm text-gray-400 select-none;
 }
 .dialog-title {
-	@apply flex items-center py-2 text-lg font-medium leading-6;
+	@apply flex items-center py-2 text-lg font-medium leading-6 select-none;
 }
 </style>

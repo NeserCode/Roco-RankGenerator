@@ -2,7 +2,7 @@
 import ContainerDialog from "./containerDialog.vue"
 import RankHelper from "./rankHelper.vue"
 import { debounce } from "ts-debounce"
-import { ref, computed, watch } from "vue"
+import { ref, computed } from "vue"
 import { useStore } from "vuex"
 import { key } from "@/state"
 
@@ -69,11 +69,12 @@ const isNotFound = computed(() => {
 })
 const displayFn = (player: Ws_RankPackage) => player.nickname
 
-const loger = () => {
-	console.log(selectedPlayer.value)
+const exceptFn = (player: Ws_RankPackage) => {
+	return player.id === $store.state.user.id
 }
-
-watch(selectedPlayer, loger)
+const exceptClass = (player: Ws_RankPackage) => {
+	return player.id === $store.state.user.id ? "except" : null
+}
 </script>
 
 <template>
@@ -133,8 +134,15 @@ watch(selectedPlayer, loger)
 								:key="player.id"
 								:value="player"
 								v-slot="{ selected, active }"
+								:disabled="exceptFn(player)"
 							>
-								<li :class="['combox-option-item', isActivedItem(active)]">
+								<li
+									:class="[
+										'combox-option-item',
+										isActivedItem(active),
+										exceptClass(player),
+									]"
+								>
 									<CheckIcon
 										v-if="selected"
 										class="check-icon"
@@ -259,8 +267,11 @@ p {
 }
 
 .combox-option-item {
-	@apply relative cursor-default select-none flex items-center justify-start
+	@apply relative cursor-pointer select-none flex items-center justify-start
 	py-1.5 px-9;
+}
+.combox-option-item.except {
+	@apply bg-red-400 cursor-not-allowed;
 }
 
 .check-icon {

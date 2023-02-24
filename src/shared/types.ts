@@ -69,13 +69,13 @@ export interface Ws_RankPackage extends Ws_BasicInfoPackage {
 }
 
 export interface Ws_BattlePackage extends Ws_BasicInfoPackage {
-	type: "BATTLE" | "BATTLE_INFO"
+	type: "BATTLE" | "BATTLE_INFO" | "BATTLE_INFO_ENSURE"
 	winerId: string
 	loserId: string
 }
 
 export interface Ws_BattleInfoPackage extends Ws_BattlePackage {
-	type: "BATTLE_INFO"
+	type: "BATTLE_INFO" | "BATTLE_INFO_ENSURE"
 	winer: Ws_RankPackage
 	loser: Ws_RankPackage
 }

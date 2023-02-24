@@ -1,6 +1,8 @@
 import { WebSocketServer } from 'ws'
 import { createHmac } from 'crypto'
 
+import { RankStack } from './utils/RankStack.js'
+
 const port = 2333
 const Socket = new WebSocketServer({ port, clientTracking: true })
 const HOST_KEY = createHmac('sha256', 'NeserCode.Roco').digest('hex')
@@ -9,6 +11,7 @@ let PlayerIdList = new Set([])
 let PlayerList = []
 let HOST_ID = null
 let ROUND_SUM = 0
+let RANK_STACK = new RankStack(5)
 
 Socket.on('close', (e) => {
 	console.log(`[WebSocket Closed] ${e}`);
@@ -67,9 +70,43 @@ Socket.on('connection', (socket) => {
 				playerIdList: [...PlayerIdList],
 				playerList: PlayerList
 			}))
+		} else if (JsonMessage.type === "BATTLE_INFO_QUERY") {
+			socket.send(JSON.stringify({
+				type: 'BATTLE_INFO_REPLY',
+				timestamp: Date.now(),
+				data: RANK_STACK.value
+			}))
+		} else if (JsonMessage.type === "BATTLE") {
+			if (PlayerIdList.has(JsonMessage.winerId) && PlayerIdList.has(JsonMessage.loserId)) {
+				let winer = PlayerList.find((p) => p.id === JsonMessage.winerId)
+				let loser = PlayerList.find((p) => p.id === JsonMessage.loserId)
+
+				if (winer && loser) {
+					if (JsonMessage.isEnsured) {
+						RANK_STACK.pushRank({
+							type: 'BATTLE_INFO',
+							id: JsonMessage.id,
+							winerId: JsonMessage.winerId,
+							loserId: JsonMessage.loserId,
+							winer,
+							loser,
+							timestamp: Date.now()
+						})
+					} else {
+						// not ensure
+						socket.send(JSON.stringify({
+							type: 'BATTLE_INFO_ENSURE',
+							winerId: JsonMessage.winerId,
+							loserId: JsonMessage.loserId,
+							winer,
+							loser,
+							timestamp: Date.now()
+						}))
+					}
+				}
+			}
+
 		}
-
-
 
 		let index = 0
 		Socket.clients.forEach((c) => {

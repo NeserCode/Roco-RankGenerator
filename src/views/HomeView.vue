@@ -161,6 +161,17 @@ $Bus.on("next-round", ({ round }) => {
 	)
 })
 
+// query rank data
+$Bus.on("query-rank-data", (data) => {
+	wsProxy.value.send(
+		JSON.stringify({
+			type: "BATTLE_INFO_QUERY",
+			id: data.id,
+			timestamp: Date.now(),
+		})
+	)
+})
+
 onUnmounted(() => {
 	wsProxy.value.send(
 		JSON.stringify({

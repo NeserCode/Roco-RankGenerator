@@ -1,5 +1,5 @@
 <script lang="ts" setup>
-import { CloudArrowDownIcon } from "@heroicons/vue/20/solid"
+import { CloudArrowDownIcon, ArrowPathIcon } from "@heroicons/vue/20/solid"
 
 import { ref, defineProps, toRefs, watch, computed } from "vue"
 
@@ -20,6 +20,8 @@ watch(query, (player: Ws_RankPackage) => {
 
 const loadingState = ref(true)
 const loadingText = ref("正在等待选定对手")
+const adviceText = ref("正在计算")
+const adviceLoadingState = ref(true)
 const computedRankText = computed(() =>
 	computedRank(query.value.rank, query.value.level, query.value.star)
 )
@@ -33,8 +35,49 @@ const computedTitle = (info: BattleStack) => {
 	return `${info.state ? "战胜" : "输给"} ${info.opponent.nickname}`
 }
 
+function getAdvice(data: BattleStack[]): string {
+	let winCount = 0
+	let loseCount = 0
+	let winRate = 0
+	let advice = ""
+
+	data.forEach((info) => {
+		if (info.state) {
+			winCount++
+		} else {
+			loseCount++
+		}
+	})
+
+	winRate = winCount / (winCount + loseCount)
+
+	advice = `测试字段 胜率：${winRate * 100}%`
+	// check last 5 battle has double or higher win or lose
+	let lastFiveBattle = data.slice(-5)
+	lastFiveBattle.forEach((info) => {
+		if (info.state) {
+			advice += "[+]"
+		} else {
+			advice += "[-]"
+		}
+	})
+
+	return advice
+}
+
 $Bus.on("query-rank-data-reply", (data) => {
-	loadingState.value = false
+	loadingState.value = true
+	adviceLoadingState.value = true
+	adviceText.value = "正在计算"
+
+	setTimeout(() => {
+		loadingState.value = false
+		setTimeout(() => {
+			adviceLoadingState.value = false
+			adviceText.value = getAdvice(battleInfo.value)
+		}, 800)
+	}, 800)
+
 	rankStack.value.setStack(data)
 })
 </script>
@@ -57,12 +100,20 @@ $Bus.on("query-rank-data-reply", (data) => {
 					>
 						{{ info.state ? "胜" : "负" }}
 					</span>
+					<span class="info-item" v-if="battleInfo.length === 0">暂无</span>
 				</span>
 			</span>
 			<span>
 				<span class="prefix">Ta的段位</span>
 				<span class="rank-simple">
 					<span>{{ computedRankText }}</span>
+				</span>
+			</span>
+			<span class="advice">
+				<span class="prefix">建议</span>
+				<ArrowPathIcon class="advice-loading-icon" v-if="adviceLoadingState" />
+				<span class="rank-simple">
+					<span>{{ adviceText }}</span>
 				</span>
 			</span>
 		</span>
@@ -105,5 +156,14 @@ $Bus.on("query-rank-data-reply", (data) => {
 }
 .info-item:nth-child(odd) {
 	@apply bg-gray-300 dark:bg-gray-500;
+}
+
+/* Advice style */
+.advice {
+	@apply inline-flex items-center pt-2;
+}
+
+.advice-loading-icon {
+	@apply w-3 h-3 animate-spin mx-1;
 }
 </style>

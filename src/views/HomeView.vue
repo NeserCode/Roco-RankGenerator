@@ -117,7 +117,7 @@ const wsProxy = ref<WebSocketProxy>(
 			// reply battle info
 			else if (data.type === "BATTLE_INFO_REPLY") {
 				console.log("[BATTLE_INFO_REPLY]", data)
-				$Bus.emit("query-rank-data-reply", data)
+				$Bus.emit("query-rank-data-reply", data.data)
 			} else if (data.type === "BATTLE_INFO_ENSURE") {
 				console.log("[BATTLE_INFO_ENSURE]", data)
 				$Bus.emit("ensure-battle", data)

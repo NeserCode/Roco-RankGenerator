@@ -1,30 +1,51 @@
 import { Ws_BattleInfoPackage } from "@/shared/types"
 
+export interface BattleStack extends Ws_BattleInfoPackage {
+	state: boolean
+	opponent: Ws_BattleInfoPackage["winer"] | Ws_BattleInfoPackage["loser"]
+}
+
 export class RankStack {
-	value: Ws_BattleInfoPackage[] = []
-	limit = 10
+	sValue: Ws_BattleInfoPackage[] = []
+	sLimit = 10
 
 	constructor(lengthLimit?: number) {
-		this.limit = lengthLimit ?? 10
+		this.sLimit = lengthLimit ?? 10
 	}
 
 	public pushRank(rank: Ws_BattleInfoPackage) {
 		if (rank === undefined || rank === null) return
-		if (this.value.length === this.limit) {
-			this.value.shift()
+		if (this.sValue.length === this.sLimit) {
+			this.sValue.shift()
 		}
-		this.value.push(rank)
+		this.sValue.push(rank)
 	}
 
 	public getRank() {
-		return this.value
+		return this.sValue
 	}
 
 	public getRankByIndex(index: number) {
-		return this.value[index]
+		return this.sValue[index]
 	}
 
 	public setStack(data: Ws_BattleInfoPackage[]) {
-		this.value = data
+		this.sValue = data
+	}
+
+	public translateToBattle(id: string): BattleStack[] {
+		const result: BattleStack[] = []
+		if (this.sValue.length !== 0) {
+			this.sValue.forEach((item) => {
+				if (item.winer.id !== "null" && item.loser.id !== "null") {
+					if (item.winerId === id) {
+						result.push({ ...item, state: true, opponent: item.loser })
+					} else if (item.loserId === id) {
+						result.push({ ...item, state: false, opponent: item.winer })
+					}
+				}
+			})
+		}
+		return result
 	}
 }

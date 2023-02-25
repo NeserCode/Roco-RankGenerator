@@ -12,7 +12,7 @@ let PlayerList = []
 let HOST_ID = null
 let ROUND_SUM = 0
 let ROUND = 0
-let RANK_STACK = new RankStack(5)
+let RANK_STACK = new RankStack(10)
 
 Socket.on("close", (e) => {
 	console.log(`[WebSocket Closed] ${e}`)
@@ -89,7 +89,7 @@ Socket.on("connection", (socket) => {
 				JSON.stringify({
 					type: "BATTLE_INFO_REPLY",
 					timestamp: Date.now(),
-					data: RANK_STACK.value,
+					data: RANK_STACK.getRankInfoById(JsonMessage.id) ?? [],
 				})
 			)
 		} else if (JsonMessage.type === "BATTLE_INFO") {
@@ -112,7 +112,15 @@ Socket.on("connection", (socket) => {
 					id: JsonMessage.id,
 					winerId: JsonMessage.winerId,
 					loserId: JsonMessage.loserId,
-					winer,
+					winer: winer ?? {
+						id: JsonMessage.winerId,
+						nickname: "-",
+						rank: 0,
+						level: 0,
+						star: 0,
+						type: "SPECIAL_RANK",
+						timestamp: -1,
+					},
 					loser: loser ?? {
 						id: JsonMessage.loserId,
 						nickname: "-",

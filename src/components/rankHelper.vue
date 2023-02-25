@@ -5,9 +5,9 @@ import { ref, defineProps, toRefs, watch, computed } from "vue"
 
 import { $Bus } from "@/utils/Mitt"
 import { computedRank } from "@/utils/rank"
-import { RankStack } from "@/utils/rankStack"
+import { RankStack, BattleStack } from "@/utils/rankStack"
 
-import type { Ws_RankPackage, Ws_BattleInfoPackage } from "@/shared/types"
+import type { Ws_RankPackage } from "@/shared/types"
 
 const $props = defineProps<{
 	query: Ws_RankPackage
@@ -24,9 +24,14 @@ const computedRankText = computed(() =>
 	computedRank(query.value.rank, query.value.level, query.value.star)
 )
 
-// const info_test = ref<Ws_BattleInfoPackage[]>([])
-const info_test = ref<string[]>(["1W", "2L", "3L", "4L", "5W"])
 const rankStack = ref<RankStack>(new RankStack())
+const battleInfo = computed(() =>
+	rankStack.value.translateToBattle(query.value.id)
+)
+
+const computedTitle = (info: BattleStack) => {
+	return `${info.state ? "战胜" : "输给"} ${info.opponent.nickname}`
+}
 
 $Bus.on("query-rank-data-reply", (data) => {
 	loadingState.value = false
@@ -44,8 +49,13 @@ $Bus.on("query-rank-data-reply", (data) => {
 			<span>
 				<span class="prefix">Ta的战绩</span>
 				<span class="rank-info-simple">
-					<span class="info-item" v-for="info in info_test" :key="info">
-						{{ info }}
+					<span
+						class="info-item"
+						v-for="info in battleInfo"
+						:key="info.id"
+						:title="computedTitle(info)"
+					>
+						{{ info.state ? "胜" : "负" }}
 					</span>
 				</span>
 			</span>

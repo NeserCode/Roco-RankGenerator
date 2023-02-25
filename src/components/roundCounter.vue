@@ -110,8 +110,8 @@ $Bus.on("next-round-count", () => {
 								:key="player.id"
 								:value="player"
 								v-slot="{ selected, active }"
-								:disabled="exceptFn(player)"
 							>
+								<!-- :disabled="exceptFn(player)" -->
 								<li
 									:class="[
 										'combox-option-item',

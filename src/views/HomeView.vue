@@ -91,7 +91,9 @@ const wsProxy = ref<WebSocketProxy>(
 			// before round start
 			else if (data.type === "BEFORE_ROUND") {
 				console.log("[BEFORE_ROUND]", data)
+				$store.commit("updateRound", data.round)
 				$store.commit("nextRound")
+				if (data.isAddon) $store.commit("ensureAddon")
 				$Bus.emit("next-round-count", data)
 			}
 			// start next round
@@ -106,13 +108,16 @@ const wsProxy = ref<WebSocketProxy>(
 			// client number
 			else if (data.client !== undefined)
 				$Bus.emit("update-client-number", data)
-			// update battle info
+			// upload battle info
 			else if (data.type === "BATTLE_INFO") {
 				console.log("[BATTLE_INFO]", data)
 				$Bus.emit("ensure-battle", data)
 			}
-			// update battle info
-			else if (data.type === "BATTLE_INFO_ENSURE") {
+			// reply battle info
+			else if (data.type === "BATTLE_INFO_REPLY") {
+				console.log("[BATTLE_INFO_REPLY]", data)
+				$Bus.emit("query-rank-data-reply", data)
+			} else if (data.type === "BATTLE_INFO_ENSURE") {
 				console.log("[BATTLE_INFO_ENSURE]", data)
 				$Bus.emit("ensure-battle", data)
 			} else console.log("[Exception]", data)

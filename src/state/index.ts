@@ -125,6 +125,9 @@ export default createStore<State>({
 			// Auto run
 			// $Bus.emit("next-round", { round: state.room.round })
 		},
+		updateRound(state, round: number) {
+			state.room.round = round
+		},
 		ensureAddon(state) {
 			state.isAddon = true
 		},

@@ -11,6 +11,7 @@ let PlayerIdList = new Set([])
 let PlayerList = []
 let HOST_ID = null
 let ROUND_SUM = 0
+let ROUND = 0
 let RANK_STACK = new RankStack(5)
 
 Socket.on('close', (e) => {
@@ -33,6 +34,7 @@ Socket.on('connection', (socket) => {
 			console.log(`[WebSocket Host] ${HOST_ID}`);
 		} else if (JsonMessage.type === "BEFORE_START") {
 			ROUND_SUM = JsonMessage.roundLimit ?? 10
+			ROUND = 0
 			setTimeout(() => {
 				socket.send(JSON.stringify({
 					type: 'START_ROUND',
@@ -42,6 +44,7 @@ Socket.on('connection', (socket) => {
 		} else if (JsonMessage.type === "BEFORE_ROUND" && ROUND_SUM >= 0) {
 			console.log(`[WebSocket Round Start]`);
 			setTimeout(() => {
+				ROUND++
 				socket.send(JSON.stringify({
 					type: 'START_ROUND',
 					round: JsonMessage.round,
@@ -52,7 +55,7 @@ Socket.on('connection', (socket) => {
 
 			if (ROUND_SUM - 1 >= 0)
 				ROUND_SUM--
-			console.log(`[WebSocket Round End] Leave ${ROUND_SUM} Round`);
+			console.log(`[WebSocket Round End] Leave ${ROUND_SUM} Round ${ROUND}`);
 		}
 
 		if (JsonMessage.type === "JOIN" || JsonMessage.type === "HOST") {
@@ -91,20 +94,18 @@ Socket.on('connection', (socket) => {
 							winer,
 							loser,
 							timestamp: Date.now(),
-							isEnsured: true
 						})
-					} else {
-						// not ensure
-						socket.send(JSON.stringify({
-							type: 'BATTLE_INFO_ENSURE',
-							winerId: JsonMessage.winerId,
-							loserId: JsonMessage.loserId,
-							winer,
-							loser,
-							timestamp: Date.now(),
-							isEnsured: false
-						}))
 					}
+
+					socket.send(JSON.stringify({
+						type: JsonMessage.isEnsured ? 'BATTLE_INFO' : 'BATTLE_INFO_ENSURE',
+						winerId: JsonMessage.winerId,
+						loserId: JsonMessage.loserId,
+						winer,
+						loser,
+						timestamp: Date.now(),
+						isEnsured: JsonMessage.isEnsured
+					}))
 				}
 			}
 
@@ -112,7 +113,16 @@ Socket.on('connection', (socket) => {
 
 		let index = 0
 		Socket.clients.forEach((c) => {
-			c.send(String(message))
+			if (JsonMessage.type !== "BEFORE_ROUND")
+				c.send(String(message))
+			else {
+				c.send(JSON.stringify({
+					...JsonMessage,
+					round: ROUND,
+					isAddon: ROUND_SUM === 0
+				}))
+				console.log(`[Round $${ROUND}]`);
+			}
 			console.log(`[Reboardcast User $${++index}]`);
 		});
 

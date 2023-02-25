@@ -52,7 +52,7 @@ function battleStateHanlder(state: boolean) {
 		type: isEnsured ? "BATTLE_INFO_ENSURE" : "BATTLE_INFO",
 	})
 
-	// closeDialog()
+	closeDialog()
 }
 
 const isActivedItem = computed(() => (active: boolean) => {

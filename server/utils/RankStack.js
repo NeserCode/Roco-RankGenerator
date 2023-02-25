@@ -11,9 +11,4 @@ export class RankStack {
     }
     this.value.push(rank);
   }
-
-  get value() {
-    if (this.value.length === 0) return [];
-    return this.value;
-  }
 }

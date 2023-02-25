@@ -79,4 +79,10 @@ button:disabled {
 	@apply bg-gray-300 dark:bg-gray-600 text-gray-500 dark:text-gray-500
 	cursor-not-allowed;
 }
+
+.state {
+	@apply flex items-center justify-center px-2
+	text-gray-500 dark:text-gray-500 text-sm
+	select-none;
+}
 </style>

@@ -25,7 +25,7 @@ import { specialOption } from "@/shared/specialRankOptions"
 const $store = useStore(key)
 const query = ref("")
 
-const selectedPlayer = ref({})
+const selectedPlayer = ref<Ws_RankPackage>(specialOption.value[0])
 const filteredPlayers = computed(() =>
 	query.value === ""
 		? $store.state.room.players
@@ -36,6 +36,23 @@ const filteredPlayers = computed(() =>
 
 function closeDialog() {
 	$Bus.emit("dialog-container-close")
+}
+
+function battleStateHanlder(state: boolean) {
+	let data = {
+		id: $store.state.user.id,
+		winerId: state ? $store.state.user.id : selectedPlayer.value.id,
+		loserId: state ? selectedPlayer.value.id : $store.state.user.id,
+		timestamp: Date.now(),
+	}
+	let isEnsured = $store.state.isEnsuredBattle === true
+
+	$Bus.emit("update-battle", {
+		...data,
+		type: isEnsured ? "BATTLE_INFO_ENSURE" : "BATTLE_INFO",
+	})
+
+	// closeDialog()
 }
 
 const isActivedItem = computed(() => (active: boolean) => {
@@ -127,12 +144,12 @@ const exceptClass = (player: Ws_RankPackage) => {
 				<p>选择你的对手，并根据双方的最近胜负决定本回合自己的胜负</p>
 				<p>
 					若双方在下一个回合开始前<b>没有选择</b>或者双方对于胜负有<b>分歧</b>，该次比赛将由
-					<underline title="别对内鬼客气哦">对手的决定</underline>
+					<span class="u" title="别对内鬼客气哦">对手的决定</span>
 					记录比分。
 				</p>
 				<p>
 					自己的选择只会影响到对手的最近胜负。
-					<underline title="有内鬼，停止交易！">你的对手也是如此</underline>。
+					<span class="u" title="有内鬼，停止交易！">你的对手也是如此</span>。
 				</p>
 				<p>
 					若双方没有配对成功，即选择了错误的对手，本场比赛将不会有记录（显示为未定胜负）
@@ -141,8 +158,12 @@ const exceptClass = (player: Ws_RankPackage) => {
 			<template #options>
 				<rank-helper :query="selectedPlayer" />
 				<div class="options">
-					<button class="btn primary" @click="closeDialog">选择胜利</button>
-					<button class="btn primary" @click="closeDialog">选择认输</button>
+					<button class="btn primary" @click="battleStateHanlder(true)">
+						选择胜利
+					</button>
+					<button class="btn primary" @click="battleStateHanlder(false)">
+						选择认输
+					</button>
 				</div>
 			</template>
 		</container-dialog>
@@ -168,7 +189,7 @@ p {
 	@apply pt-2;
 }
 
-p underline {
+p .u {
 	@apply underline underline-offset-4;
 }
 

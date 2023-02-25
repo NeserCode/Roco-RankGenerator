@@ -78,6 +78,7 @@ export interface Ws_BattleInfoPackage extends Ws_BattlePackage {
 	type: "BATTLE_INFO" | "BATTLE_INFO_ENSURE"
 	winer: Ws_RankPackage
 	loser: Ws_RankPackage
+	isEnsured?: boolean
 }
 
 export type Config = ServerInfo & Nickname & RankLevel & Id & RoundInfo

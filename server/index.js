@@ -76,7 +76,7 @@ Socket.on('connection', (socket) => {
 				timestamp: Date.now(),
 				data: RANK_STACK.value
 			}))
-		} else if (JsonMessage.type === "BATTLE") {
+		} else if (JsonMessage.type === "BATTLE_INFO") {
 			if (PlayerIdList.has(JsonMessage.winerId) && PlayerIdList.has(JsonMessage.loserId)) {
 				let winer = PlayerList.find((p) => p.id === JsonMessage.winerId)
 				let loser = PlayerList.find((p) => p.id === JsonMessage.loserId)
@@ -90,7 +90,8 @@ Socket.on('connection', (socket) => {
 							loserId: JsonMessage.loserId,
 							winer,
 							loser,
-							timestamp: Date.now()
+							timestamp: Date.now(),
+							isEnsured: true
 						})
 					} else {
 						// not ensure
@@ -100,7 +101,8 @@ Socket.on('connection', (socket) => {
 							loserId: JsonMessage.loserId,
 							winer,
 							loser,
-							timestamp: Date.now()
+							timestamp: Date.now(),
+							isEnsured: false
 						}))
 					}
 				}

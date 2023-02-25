@@ -9,9 +9,6 @@ import type {
 	Ws_ClientSumPackage,
 	Ws_RankPackage,
 } from "@/shared/types"
-/**
- * 创建仓库和导出
- */
 
 export interface State {
 	isJoinedRoom: boolean
@@ -25,6 +22,7 @@ export interface State {
 		players: Ws_RankPackage[]
 		clientSum: number
 	}
+	isEnsuredBattle: boolean
 }
 
 // 定义 injection key
@@ -51,6 +49,7 @@ export default createStore<State>({
 			players: [],
 			clientSum: 0,
 		},
+		isEnsuredBattle: false,
 	},
 	mutations: {
 		ensureJoinedRoom(state) {
@@ -128,6 +127,12 @@ export default createStore<State>({
 		},
 		ensureAddon(state) {
 			state.isAddon = true
+		},
+		ensureBattle(state) {
+			state.isEnsuredBattle = true
+		},
+		initBattle(state) {
+			state.isEnsuredBattle = false
 		},
 	},
 })

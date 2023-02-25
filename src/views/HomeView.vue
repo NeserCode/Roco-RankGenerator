@@ -106,7 +106,16 @@ const wsProxy = ref<WebSocketProxy>(
 			// client number
 			else if (data.client !== undefined)
 				$Bus.emit("update-client-number", data)
-			else console.log("[Exception]", data)
+			// update battle info
+			else if (data.type === "BATTLE_INFO") {
+				console.log("[BATTLE_INFO]", data)
+				$Bus.emit("ensure-battle", data)
+			}
+			// update battle info
+			else if (data.type === "BATTLE_INFO_ENSURE") {
+				console.log("[BATTLE_INFO_ENSURE]", data)
+				$Bus.emit("ensure-battle", data)
+			} else console.log("[Exception]", data)
 		}
 	})
 )
@@ -159,6 +168,17 @@ $Bus.on("next-round", ({ round }) => {
 			timestamp: Date.now(),
 		})
 	)
+	$store.commit("initBattle")
+})
+
+// update battle
+$Bus.on("update-battle", (data) => {
+	wsProxy.value.send(JSON.stringify(data))
+})
+
+// ensure battle
+$Bus.on("ensure-battle", () => {
+	$store.commit("ensureBattle")
 })
 
 // query rank data

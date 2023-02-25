@@ -53,6 +53,9 @@ $Bus.on("dialog-container-close", () => {
 							</DialogTitle>
 							<DialogDescription as="div" class="dialog-details">
 								<slot name="details"></slot>
+								<div class="scrollable">
+									<slot name="info"></slot>
+								</div>
 							</DialogDescription>
 							<slot name="options"></slot>
 						</DialogPanel>
@@ -84,8 +87,12 @@ $Bus.on("dialog-container-close", () => {
 }
 
 .dialog-details {
-	@apply flex flex-col max-h-64 overflow-y-auto
+	@apply flex flex-col
 	text-sm text-gray-400 select-none;
+}
+.dialog-details .scrollable {
+	@apply mt-1 px-1.5 max-h-40 border-2
+	border-gray-200 dark:border-gray-700 overflow-y-auto;
 }
 .dialog-title {
 	@apply flex items-center py-2 text-lg font-medium leading-6 select-none;

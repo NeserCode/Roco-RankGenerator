@@ -1,9 +1,10 @@
 <script lang="ts" setup>
 import { CloudArrowDownIcon } from "@heroicons/vue/20/solid"
 
-import { ref, defineProps, toRefs, watch } from "vue"
+import { ref, defineProps, toRefs, watch, computed } from "vue"
 
 import { $Bus } from "@/utils/Mitt"
+import { computedRank } from "@/utils/rank"
 import { RankStack } from "@/utils/rankStack"
 
 import type { Ws_RankPackage, Ws_BattleInfoPackage } from "@/shared/types"
@@ -19,24 +20,13 @@ watch(query, (player: Ws_RankPackage) => {
 
 const loadingState = ref(true)
 const loadingText = ref("正在等待选定对手")
+const computedRankText = computed(() =>
+	computedRank(query.value.rank, query.value.level, query.value.star)
+)
 
 // const info_test = ref<Ws_BattleInfoPackage[]>([])
 const info_test = ref<string[]>(["1W", "2L", "3L", "4L", "5W"])
 const rankStack = ref<RankStack>(new RankStack())
-
-// function rankDataGenerator(
-// 	player: Ws_RankPackage,
-// 	data: Ws_BattleInfoPackage[]
-// ) {
-// 	let pid = player.id
-// 	data.forEach((item) => {
-// 		if (item.winerId === pid) {
-// 			player.win++
-// 		} else if (item.loserId === pid) {
-// 			player.lose++
-// 		}
-// 	})
-// }
 
 $Bus.on("query-rank-data-reply", (data) => {
 	loadingState.value = false
@@ -51,10 +41,18 @@ $Bus.on("query-rank-data-reply", (data) => {
 			<span>{{ loadingText }}</span>
 		</span>
 		<span class="rank-infomation" v-else>
-			<span class="prefix">Ta的战绩</span>
-			<span class="rank-info-simple">
-				<span class="info-item" v-for="info in info_test" :key="info">
-					{{ info }}
+			<span>
+				<span class="prefix">Ta的战绩</span>
+				<span class="rank-info-simple">
+					<span class="info-item" v-for="info in info_test" :key="info">
+						{{ info }}
+					</span>
+				</span>
+			</span>
+			<span>
+				<span class="prefix">Ta的段位</span>
+				<span class="rank-simple">
+					<span>{{ computedRankText }}</span>
 				</span>
 			</span>
 		</span>
@@ -76,17 +74,20 @@ $Bus.on("query-rank-data-reply", (data) => {
 
 /* Info style */
 .rank-infomation {
-	@apply inline-flex items-center pt-3;
+	@apply inline-flex flex-col justify-center pt-3;
 }
 
 .prefix,
 .rank-info-simple {
-	@apply inline-block mx-1 text-sm;
+	@apply inline-block mx-1 text-sm select-none;
 }
 
 .rank-info-simple {
 	@apply inline-flex items-center border-2
 	border-gray-400 dark:border-gray-600;
+}
+.rank-simple {
+	@apply inline-flex text-sm text-gray-500 dark:text-gray-300;
 }
 
 .info-item {

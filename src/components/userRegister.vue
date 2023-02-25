@@ -1,6 +1,7 @@
 <script lang="ts" setup>
 import type { Config } from "@/shared/types"
 import { configStorager } from "@/utils/ConfigStorage"
+import { computedRank } from "@/utils/rank"
 import { $Bus } from "@/utils/Mitt"
 
 import { debounce } from "ts-debounce"
@@ -38,42 +39,9 @@ const JoinTheRoom = debounce(() => {
 // key
 const key = ref(localStorage.getItem("roco.host.key") || "")
 
-const computedRank = computed(() => {
-	let rankText =
-		Number(config.value.rank) == 0
-			? "学徒魔法师"
-			: config.value.rank == 1
-			? "初级魔法师"
-			: config.value.rank == 2
-			? "中级魔法师"
-			: config.value.rank == 3
-			? "高级魔法师"
-			: config.value.rank == 4
-			? "魔导士"
-			: "圣魔导师"
-	let levelText = "I"
-	switch (Number(config.value.level)) {
-		case 0:
-			levelText = "I"
-			break
-		case 1:
-			levelText = "II"
-			break
-		case 2:
-			levelText = "III"
-			break
-		case 3:
-			levelText = "IV"
-			break
-		case 4:
-			levelText = "V"
-			break
-		default:
-			levelText = "I"
-			break
-	}
-	return `${rankText}·${levelText}·${config.value.star}星`
-})
+const computedRankText = computed(() =>
+	computedRank(config.value.rank, config.value.level, config.value.star)
+)
 </script>
 
 <template>
@@ -100,7 +68,7 @@ const computedRank = computed(() => {
 				<span class="rank-wrapper">
 					<span class="label">段位</span>
 					<span class="rank">
-						{{ computedRank }}
+						{{ computedRankText }}
 					</span>
 				</span>
 				<span class="tip"

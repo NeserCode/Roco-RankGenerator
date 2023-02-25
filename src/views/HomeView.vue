@@ -93,8 +93,9 @@ const wsProxy = ref<WebSocketProxy>(
 				console.log("[BEFORE_ROUND]", data)
 				$store.commit("updateRound", data.round)
 				$store.commit("nextRound")
-				if (data.isAddon) $store.commit("ensureAddon")
+
 				$Bus.emit("next-round-count", data)
+				if (data.isAddon) $store.commit("ensureAddon")
 			}
 			// start next round
 			else if (data.type === "START_ROUND") {
@@ -219,7 +220,7 @@ onUnmounted(() => {
 
 <style lang="postcss" scoped>
 .home {
-	@apply inline-flex flex-col items-center w-full py-4
+	@apply inline-flex flex-col items-center w-full pb-4
 	bg-gray-50 dark:bg-gray-700 text-gray-800 dark:text-gray-200;
 }
 </style>

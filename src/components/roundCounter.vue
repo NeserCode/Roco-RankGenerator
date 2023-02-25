@@ -145,18 +145,28 @@ $Bus.on("next-round-count", () => {
 						</ComboboxOptions>
 					</TransitionRoot>
 				</Combobox>
+			</template>
+			<template #info>
 				<p>选择你的对手，并根据双方的最近胜负决定本回合自己的胜负</p>
 				<p>
-					若双方在下一个回合开始前<b>没有选择</b>或者双方对于胜负有<b>分歧</b>，该次比赛将由
-					<span class="u" title="别对内鬼客气哦">对手的决定</span>
-					记录比分。
+					若双方对于胜负有<b>分歧</b>，该次比赛将由<span
+						class="u"
+						title="别对内鬼客气哦"
+						>对手的决定</span
+					>记录比分
 				</p>
 				<p>
-					自己的选择只会影响到对手的最近胜负。
-					<span class="u" title="有内鬼，停止交易！">你的对手也是如此</span>。
+					自己的选择只会影响到对手的最近胜负,
+					<span class="u" title="有内鬼，停止交易！">你的对手也是如此</span>
 				</p>
 				<p>
 					若双方没有配对成功，即选择了错误的对手，本场比赛将不会有记录（显示为未定胜负）
+				</p>
+				<p>
+					默认每回合开始时选中的对手为空排，选择胜或者负都不会影响到玩家实际的输赢
+				</p>
+				<p>
+					对手为路人时，你的选择将变为决定<b>自己</b>的战绩，此时查询到的路人战绩<b>不</b>具有参考价值
 				</p>
 			</template>
 			<template #options>
@@ -190,7 +200,7 @@ button:disabled {
 }
 
 p {
-	@apply pt-2;
+	@apply my-1 p-px;
 }
 
 p .u {
@@ -199,6 +209,10 @@ p .u {
 
 p b {
 	@apply inline-block mx-0.5;
+}
+
+p:nth-child(even) {
+	@apply bg-gray-200 dark:bg-gray-700;
 }
 
 .btn {

@@ -11,4 +11,8 @@ export class RankStack {
     }
     this.value.push(rank);
   }
+
+  clear() {
+    this.value = [];
+  }
 }

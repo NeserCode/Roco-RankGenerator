@@ -69,6 +69,10 @@ const exceptFn = (player: Ws_RankPackage) => {
 const exceptClass = (player: Ws_RankPackage) => {
 	return player.id === $store.state.user.id ? "except" : null
 }
+
+$Bus.on("next-round-count", () => {
+	selectedPlayer.value = specialOption.value[0]
+})
 </script>
 
 <template>

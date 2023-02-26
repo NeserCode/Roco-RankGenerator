@@ -76,6 +76,14 @@ Socket.on("connection", (socket) => {
 				PlayerList.push(JsonMessage)
 			}
 
+			// update player rank
+			RANK_STACK.updateRank(JsonMessage)
+			if (PlayerList.find((p) => p.id === JsonMessage.id)) {
+				PlayerList = PlayerList.map((p) =>
+					p.id === JsonMessage.id ? JsonMessage : p
+				)
+			}
+
 			socket.send(
 				JSON.stringify({
 					type: "PLAYERS_INFO",
@@ -90,6 +98,7 @@ Socket.on("connection", (socket) => {
 					type: "BATTLE_INFO_REPLY",
 					timestamp: Date.now(),
 					data: RANK_STACK.getRankInfoById(JsonMessage.id) ?? [],
+					queryId: JsonMessage.id,
 				})
 			)
 		} else if (JsonMessage.type === "BATTLE_INFO") {

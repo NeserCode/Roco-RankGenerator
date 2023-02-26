@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref } from "vue"
+import { useStore } from "vuex"
 import {
 	TransitionRoot,
 	TransitionChild,
@@ -10,11 +11,14 @@ import {
 } from "@headlessui/vue"
 
 import { $Bus } from "@/utils/Mitt"
+import { key } from "@/state"
 
+const $store = useStore(key)
 const isOpen = ref(false)
 
 $Bus.on("dialog-container-open", () => {
 	isOpen.value = true
+	$Bus.emit("query-rank-data", { id: $store.state.user.id })
 })
 $Bus.on("dialog-container-close", () => {
 	isOpen.value = false

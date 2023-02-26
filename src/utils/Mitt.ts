@@ -28,5 +28,5 @@ export const $Bus = Mitt<{
 	"update-battle": Ws_BattlePackage
 	"ensure-battle": Ws_BattleInfoPackage
 	"query-rank-data": { id: string }
-	"query-rank-data-reply": Ws_BattleInfoPackage[]
+	"query-rank-data-reply": { data: Ws_BattleInfoPackage[]; queryId: string }
 }>()

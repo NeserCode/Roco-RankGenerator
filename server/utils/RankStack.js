@@ -37,6 +37,13 @@ export class RankStack {
     }
   }
 
+  updateRank(rank) {
+    if (rank === {} || rank === undefined || rank === [] || rank === null) return;
+    let index = this.value.findIndex((r) => r.id === rank.id);
+    if (index === -1) return;
+    this.value[index] = rank;
+  }
+
   getRankInfoById(id) {
     return this.map.get(id);
   }

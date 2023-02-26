@@ -18,6 +18,11 @@ const wsUrl = new URL(`ws://${config.server}:${config.port}/base`)
 
 function getUserInfo(): Ws_RankPackage {
 	let config2 = configStorager.getConfig()
+	$store.commit("updateUserRank", {
+		rank: config2.rank,
+		level: config2.level,
+		star: config2.star,
+	})
 	return {
 		id: config2.id,
 		type: "RANK",
@@ -94,8 +99,8 @@ const wsProxy = ref<WebSocketProxy>(
 				$store.commit("updateRound", data.round)
 				$store.commit("nextRound")
 
-				$Bus.emit("next-round-count", data)
 				if (data.isAddon) $store.commit("ensureAddon")
+				$Bus.emit("next-round-count", data)
 			}
 			// start next round
 			else if (data.type === "START_ROUND") {
@@ -117,7 +122,10 @@ const wsProxy = ref<WebSocketProxy>(
 			// reply battle info
 			else if (data.type === "BATTLE_INFO_REPLY") {
 				console.log("[BATTLE_INFO_REPLY]", data)
-				$Bus.emit("query-rank-data-reply", data.data)
+				$Bus.emit("query-rank-data-reply", {
+					data: data.data,
+					queryId: data.queryId,
+				})
 			} else if (data.type === "BATTLE_INFO_ENSURE") {
 				console.log("[BATTLE_INFO_ENSURE]", data)
 				$Bus.emit("ensure-battle", data)

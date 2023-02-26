@@ -1,10 +1,11 @@
 <script lang="ts" setup>
 import { CloudArrowDownIcon, ArrowPathIcon } from "@heroicons/vue/20/solid"
-
 import { ref, defineProps, toRefs, watch, computed, onUnmounted } from "vue"
+import { useStore } from "vuex"
 
+import { key } from "@/state"
 import { $Bus } from "@/utils/Mitt"
-import { computedRank, RankAnalyse } from "@/utils/rank"
+import { computedRank, RankAnalyse, compareRank } from "@/utils/rank"
 import { RankStack, BattleStack } from "@/utils/rankStack"
 
 import type { Ws_RankPackage } from "@/shared/types"
@@ -13,10 +14,10 @@ const $props = defineProps<{
 	query: Ws_RankPackage
 }>()
 const { query } = toRefs($props)
+const $store = useStore(key)
 
 watch(query, (player: Ws_RankPackage) => {
 	$Bus.emit("query-rank-data", { id: player.id })
-	console.log(1)
 })
 
 const loadingState = ref(true)
@@ -24,25 +25,32 @@ const loadingText = ref("正在等待选定对手")
 const adviceText = ref("正在计算")
 const adviceLoadingState = ref(true)
 let loadingTimer: NodeJS.Timeout[] = []
+
 const computedRankText = computed(() =>
 	computedRank(query.value.rank, query.value.level, query.value.star)
 )
 
 const rankStack = ref<RankStack>(new RankStack())
+const selfStack = ref<RankStack>(new RankStack())
+
 const battleInfo = computed(() =>
 	rankStack.value.translateToBattle(query.value.id)
 )
+const selfBattleInfo = () =>
+	selfStack.value.translateToBattle($store.state.user.id)
 
 const computedTitle = (info: BattleStack) => {
 	return `${info.state ? "战胜" : "输给"} ${info.opponent.nickname}`
 }
 
-function getAdvice(data: BattleStack[]): string {
+function getAdvice(data: BattleStack[], self: BattleStack[]): string {
 	let winCount = 0
 	let loseCount = 0
 	let winRate = 0
 	let advice = ""
 	let rankAnalyseResult = RankAnalyse(data, query.value)
+	let selfAnalyseResult = RankAnalyse(self, $store.state.user)
+	let winByRank = compareRank($store.state.user, query.value)
 
 	data.forEach((info) => {
 		if (info.state) {
@@ -54,36 +62,42 @@ function getAdvice(data: BattleStack[]): string {
 
 	winRate = winCount / (winCount + loseCount)
 
-	advice = `对手胜率：${(winRate * 100).toFixed(2)}%`
-	console.log(rankAnalyseResult)
+	advice = `${winRate.toFixed(2)}% 胜率`
+	console.log(rankAnalyseResult, selfAnalyseResult, winByRank)
 
-	if (data.length === 0) advice = `一场战斗都没有`
-	if (rankAnalyseResult.isDoubleWin) {
-		advice += `正处于连胜两场状态`
-	}
+	if (data.length === 0) advice = `一场战斗都没有怎么分析啊喂`
+	else if (winByRank === 1) advice += ` 你的段位高于对手`
+	else if (winRate > 0.5) advice += ` 你的胜率高于对手`
+	else if (winRate < 0.5) advice += ` 你的胜率低于对手`
+	else advice += ` 你的胜率和对手一样`
 
 	return advice
 }
 
-$Bus.on("query-rank-data-reply", (data) => {
-	clearTimeout(loadingTimer[0])
-	clearTimeout(loadingTimer[1])
+$Bus.on("query-rank-data-reply", ({ data, queryId }) => {
+	let selfId = localStorage.getItem("roco.user.id") ?? ""
 
-	loadingState.value = true
-	adviceLoadingState.value = true
-	adviceText.value = "正在计算"
+	if (queryId === selfId) selfStack.value.setStack(data)
+	else {
+		clearTimeout(loadingTimer[0])
+		clearTimeout(loadingTimer[1])
 
-	loadingTimer[0] = setTimeout(() => {
-		loadingState.value = false
-	}, 800)
-	loadingTimer[1] = setTimeout(() => {
-		adviceLoadingState.value = false
-		if (query.value.id === "null")
-			adviceText.value = "空排 你还想要什么建议....随便选一个"
-		else adviceText.value = getAdvice(battleInfo.value)
-	}, 1800)
+		loadingState.value = true
+		adviceLoadingState.value = true
+		adviceText.value = "正在计算"
 
-	rankStack.value.setStack(data)
+		loadingTimer[0] = setTimeout(() => {
+			loadingState.value = false
+		}, 800)
+		loadingTimer[1] = setTimeout(() => {
+			adviceLoadingState.value = false
+			if (query.value.id === "null")
+				adviceText.value = "空排 还想要什么建议....随便选一个"
+			else adviceText.value = getAdvice(battleInfo.value, selfBattleInfo())
+		}, 1800)
+
+		rankStack.value.setStack(data)
+	}
 })
 
 onUnmounted(() => {

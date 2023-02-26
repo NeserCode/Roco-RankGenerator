@@ -169,13 +169,15 @@ function noticeBeforeRound(
 			} else if (data.timeCount === 0) {
 				oneWord.value = `请开始匹配`
 
-				$Bus.emit("dialog-container-open")
-
 				messageQueue.value.push({
 					type: "BEFORE_ROUND",
 					message: oneWord.value,
 					timestamp: Date.now(),
 				})
+
+				setTimeout(() => {
+					$Bus.emit("dialog-container-open")
+				}, 1000)
 			}
 		} else clearInterval(interval)
 		scrolltoBottom()

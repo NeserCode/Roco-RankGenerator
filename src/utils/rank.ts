@@ -64,36 +64,38 @@ export const RankAnalyse: (
 
 	if (data.length === 0) return result
 
-	if (data.length >= 3) {
+	if (data.length >= 2) {
 		const last2Battle = data[data.length - 2]
-		const last3Battle = data[data.length - 3]
-
-		result.isFirstWin = lastBattle.state
-		result.isFirstLose = !lastBattle.state
 		if (last2Battle.state === lastBattle.state) {
 			result.isDoubleWin = lastBattle.state
 			result.isDoubleLose = !lastBattle.state
 		}
-		if (
-			last3Battle.state === last2Battle.state &&
-			last3Battle.state === lastBattle.state
-		) {
-			result.isTripleWin = lastBattle.state
-			result.isTripleLose = !lastBattle.state
-		}
-
-		if (data.length > 4) {
-			const last4Battle = data[data.length - 4]
+		if (data.length >= 3) {
+			const last3Battle = data[data.length - 3]
 			if (
-				last4Battle.state === last3Battle.state &&
-				last4Battle.state === last2Battle.state &&
-				last4Battle.state === lastBattle.state
+				last3Battle.state === last2Battle.state &&
+				last3Battle.state === lastBattle.state
 			) {
-				result.isMoreThanThreeWin = lastBattle.state
-				result.isMoreThanThreeLose = !lastBattle.state
+				result.isTripleWin = lastBattle.state
+				result.isTripleLose = !lastBattle.state
+			}
+			if (data.length > 4) {
+				const last4Battle = data[data.length - 4]
+				if (
+					last4Battle.state === last3Battle.state &&
+					last4Battle.state === last2Battle.state &&
+					last4Battle.state === lastBattle.state
+				) {
+					result.isMoreThanThreeWin = lastBattle.state
+					result.isMoreThanThreeLose = !lastBattle.state
+				}
 			}
 		}
 	}
+
+	result.isFirstWin = lastBattle.state
+	result.isFirstLose = !lastBattle.state
+
 	return result
 }
 
@@ -101,6 +103,8 @@ export const compareRank: <T extends Ws_RankPackage>(
 	a: T,
 	b: T
 ) => -1 | 0 | 1 = (a, b) => {
+	console.log(a, b)
+
 	if (a.rank === b.rank) {
 		if (a.level === b.level) {
 			if (a.star === b.star) return 0

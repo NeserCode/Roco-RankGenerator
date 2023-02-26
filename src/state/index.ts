@@ -79,6 +79,8 @@ export default createStore<State>({
 		updateUserNickname(state, { id, nickname }) {
 			state.user.id = id
 			state.user.nickname = nickname
+			// local storage
+			localStorage.setItem("roco.user.id", id)
 		},
 		updateRank(state, data: Ws_RankPackage) {
 			const player = state.room.players.findIndex(

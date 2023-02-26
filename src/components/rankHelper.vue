@@ -1,10 +1,10 @@
 <script lang="ts" setup>
 import { CloudArrowDownIcon, ArrowPathIcon } from "@heroicons/vue/20/solid"
 
-import { ref, defineProps, toRefs, watch, computed } from "vue"
+import { ref, defineProps, toRefs, watch, computed, onUnmounted } from "vue"
 
 import { $Bus } from "@/utils/Mitt"
-import { computedRank } from "@/utils/rank"
+import { computedRank, RankAnalyse } from "@/utils/rank"
 import { RankStack, BattleStack } from "@/utils/rankStack"
 
 import type { Ws_RankPackage } from "@/shared/types"
@@ -16,12 +16,14 @@ const { query } = toRefs($props)
 
 watch(query, (player: Ws_RankPackage) => {
 	$Bus.emit("query-rank-data", { id: player.id })
+	console.log(1)
 })
 
 const loadingState = ref(true)
 const loadingText = ref("正在等待选定对手")
 const adviceText = ref("正在计算")
 const adviceLoadingState = ref(true)
+let loadingTimer: NodeJS.Timeout[] = []
 const computedRankText = computed(() =>
 	computedRank(query.value.rank, query.value.level, query.value.star)
 )
@@ -40,6 +42,7 @@ function getAdvice(data: BattleStack[]): string {
 	let loseCount = 0
 	let winRate = 0
 	let advice = ""
+	let rankAnalyseResult = RankAnalyse(data, query.value)
 
 	data.forEach((info) => {
 		if (info.state) {
@@ -51,34 +54,41 @@ function getAdvice(data: BattleStack[]): string {
 
 	winRate = winCount / (winCount + loseCount)
 
-	advice = `测试字段 胜率：${winRate * 100}%`
-	// check last 5 battle has double or higher win or lose
-	let lastFiveBattle = data.slice(-5)
-	lastFiveBattle.forEach((info) => {
-		if (info.state) {
-			advice += "[+]"
-		} else {
-			advice += "[-]"
-		}
-	})
+	advice = `对手胜率：${(winRate * 100).toFixed(2)}%`
+	console.log(rankAnalyseResult)
+
+	if (data.length === 0) advice = `一场战斗都没有`
+	if (rankAnalyseResult.isDoubleWin) {
+		advice += `正处于连胜两场状态`
+	}
 
 	return advice
 }
 
 $Bus.on("query-rank-data-reply", (data) => {
+	clearTimeout(loadingTimer[0])
+	clearTimeout(loadingTimer[1])
+
 	loadingState.value = true
 	adviceLoadingState.value = true
 	adviceText.value = "正在计算"
 
-	setTimeout(() => {
+	loadingTimer[0] = setTimeout(() => {
 		loadingState.value = false
-		setTimeout(() => {
-			adviceLoadingState.value = false
-			adviceText.value = getAdvice(battleInfo.value)
-		}, 800)
 	}, 800)
+	loadingTimer[1] = setTimeout(() => {
+		adviceLoadingState.value = false
+		if (query.value.id === "null")
+			adviceText.value = "空排 你还想要什么建议....随便选一个"
+		else adviceText.value = getAdvice(battleInfo.value)
+	}, 1800)
 
 	rankStack.value.setStack(data)
+})
+
+onUnmounted(() => {
+	// Fix bug: when the component is unmounted, the event will still be triggered
+	$Bus.off("query-rank-data-reply")
 })
 </script>
 

@@ -21,9 +21,20 @@ export class RankStack {
       this.map.set(rank.loserId, []);
     }
 
+    // rule: everyone can only decide other state
+    let isWiner = rank.id === rank.winerId
+    let isSpeacial = rank.winer.type === "SPECIAL_RANK" || rank.loser.type === "SPECIAL_RANK"
+
     // id map push
-    this.map.set(rank.winerId, [...this.map.get(rank.winerId), rank]);
-    this.map.set(rank.loserId, [...this.map.get(rank.loserId), rank]);
+    if (!isSpeacial) {
+      if (isWiner)
+        this.map.set(rank.loserId, [...this.map.get(rank.loserId), rank]);
+      else
+        this.map.set(rank.winerId, [...this.map.get(rank.winerId), rank]);
+    } else {
+      this.map.set(rank.loserId, [...this.map.get(rank.loserId), rank]);
+      this.map.set(rank.winerId, [...this.map.get(rank.winerId), rank]);
+    }
   }
 
   getRankInfoById(id) {

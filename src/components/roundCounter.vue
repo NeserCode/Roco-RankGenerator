@@ -147,7 +147,9 @@ $Bus.on("next-round-count", () => {
 				</Combobox>
 			</template>
 			<template #info>
-				<p>选择你的对手，并根据双方的最近胜负决定本回合自己的胜负</p>
+				<p>
+					选择你的对手，并根据双方的最近胜负决定本回合自己的胜负。做好选择后请更新段位
+				</p>
 				<p>
 					若双方对于胜负有<b>分歧</b>，该次比赛将由<span
 						class="u"

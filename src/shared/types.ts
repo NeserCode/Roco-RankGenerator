@@ -30,6 +30,18 @@ export type RoundInfo = {
 	beforeRoundCount: number
 }
 
+export type RankAnalyseResult = {
+	isDoubleWin: boolean
+	isDoubleLose: boolean
+	isFirstWin: boolean
+	isFirstLose: boolean
+	isTripleWin: boolean
+	isTripleLose: boolean
+	isMoreThanThreeWin: boolean
+	isMoreThanThreeLose: boolean
+	rank: Ws_RankPackage
+}
+
 export interface Ws_BasicInfoPackage {
 	id: string
 	timestamp: number

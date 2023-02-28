@@ -48,6 +48,7 @@ function getAdvice(data: BattleStack[], self: BattleStack[]): string {
 	let loseCount = 0
 	let winRate = 0
 	let advice = ""
+	let power = 0
 	let rankAnalyseResult = RankAnalyse(data, query.value)
 	let selfAnalyseResult = RankAnalyse(self, $store.state.user)
 	let winByRank = compareRank($store.state.user, query.value)
@@ -62,14 +63,62 @@ function getAdvice(data: BattleStack[], self: BattleStack[]): string {
 
 	winRate = winCount / (winCount + loseCount)
 
-	advice = `${winRate.toFixed(2)}% 胜率`
-	console.log(rankAnalyseResult, selfAnalyseResult, winByRank)
+	advice = `对手持有 ${winRate.toFixed(2)}% 胜率`
 
-	if (data.length === 0) advice = `一场战斗都没有怎么分析啊喂`
-	else if (winByRank === 1) advice += ` 你的段位高于对手`
-	else if (winRate > 0.5) advice += ` 你的胜率高于对手`
-	else if (winRate < 0.5) advice += ` 你的胜率低于对手`
-	else advice += ` 你的胜率和对手一样`
+	if (rankAnalyseResult.isDoubleWin) {
+		advice += " Ta正在二连胜"
+		power -= 5
+	} else if (rankAnalyseResult.isDoubleLose) {
+		advice += " Ta正在二连败"
+		power += 5
+	} else if (rankAnalyseResult.isTripleLose) {
+		advice += " Ta正在三连败"
+		power -= 2
+	} else if (rankAnalyseResult.isTripleWin) {
+		advice += " Ta正在三连胜"
+		power += 2
+	} else if (rankAnalyseResult.isMoreThanThreeWin) {
+		advice += " Ta正在疯狂连胜"
+		power += 1
+	} else if (rankAnalyseResult.isMoreThanThreeLose) {
+		advice += " Ta正在疯狂连败"
+		power -= 1
+	}
+
+	if (selfAnalyseResult.isDoubleWin) {
+		advice += " 你正在二连胜"
+		power += 5
+	} else if (selfAnalyseResult.isDoubleLose) {
+		advice += " 你正在二连败"
+		power -= 5
+	} else if (selfAnalyseResult.isTripleLose) {
+		advice += " 你正在三连败"
+		power += 2
+	} else if (selfAnalyseResult.isTripleWin) {
+		advice += " 你正在三连胜"
+		power -= 2
+	} else if (selfAnalyseResult.isMoreThanThreeWin) {
+		advice += " 你正在疯狂连胜"
+		power -= 1
+	} else if (selfAnalyseResult.isMoreThanThreeLose) {
+		advice += " 你正在疯狂连败"
+		power += 1
+	}
+
+	if (data.length === 0) advice = `一场战斗都没有怎么分析啊喂，胜者组吃分吧`
+	else if (winByRank === 1) {
+		advice += ` 段位高于对手`
+		power += 1
+	} else if (winByRank === -1) {
+		advice += ` 段位低于对手`
+		power -= 1
+	} else if (winByRank === 0) {
+		advice += ` 段位与对手相同`
+	}
+
+	if (power > 0) advice += " 建议赢"
+	else if (power < 0) advice += " 建议输"
+	else advice += " 无建议"
 
 	return advice
 }

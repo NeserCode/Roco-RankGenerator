@@ -6,6 +6,7 @@ import UserRoom from "@/components/userRoom.vue"
 import { WebSocketProxy } from "@/utils/WebsocketMonitor"
 import { configStorager } from "@/utils/ConfigStorage"
 import { $Bus } from "@/utils/Mitt"
+import { getBattleEnsureText } from "@/utils/rank"
 import { ref, onUnmounted } from "vue"
 import { useStore } from "vuex"
 import { key } from "@/state"
@@ -191,8 +192,12 @@ $Bus.on("update-battle", (data) => {
 })
 
 // ensure battle
-$Bus.on("ensure-battle", () => {
+$Bus.on("ensure-battle", (data) => {
 	$store.commit("ensureBattle")
+	$Bus.emit(
+		"recieve-battle-self",
+		getBattleEnsureText($store.state.user.id, $store.state.room.players, data)
+	)
 })
 
 // query rank data

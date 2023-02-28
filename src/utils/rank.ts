@@ -1,5 +1,9 @@
 // import type { Config } from "@/shared/types"
-import type { RankAnalyseResult, Ws_RankPackage } from "@/shared/types"
+import type {
+	RankAnalyseResult,
+	Ws_BattlePackage,
+	Ws_RankPackage,
+} from "@/shared/types"
 import type { BattleStack } from "./rankStack"
 // import type { Ref } from "vue"
 
@@ -117,4 +121,38 @@ export const compareRank: <T extends Ws_RankPackage>(
 		return a.level > b.level ? 1 : -1
 	}
 	return a.rank > b.rank ? 1 : -1
+}
+
+export const getBattleEnsureText: (
+	selfId: string,
+	playerList: Ws_RankPackage[],
+	data: Ws_BattlePackage
+) => string = (id, playerList, data) => {
+	let result = ""
+	const self = playerList.find((v) => v.id === id)
+	const opponent = playerList.find((v) => v.id === data.id)
+
+	console.log(data, self, opponent)
+
+	if (
+		data.id !== id &&
+		(data.winerId === id || data.loserId === id) &&
+		self &&
+		opponent
+	) {
+		if (data.loserId === data.id)
+			result = `${opponent.nickname}[${computedRank(
+				opponent.rank,
+				opponent.level,
+				opponent.star
+			)}]作为你的对手选择了认输`
+		if (data.winerId === data.id)
+			result = `${opponent.nickname}[${computedRank(
+				opponent.rank,
+				opponent.level,
+				opponent.star
+			)}]作为你的对手选择了胜利`
+	}
+
+	return result
 }

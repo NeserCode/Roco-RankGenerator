@@ -54,11 +54,8 @@ function getAdvice(data: BattleStack[], self: BattleStack[]): string {
 	let winByRank = compareRank($store.state.user, query.value)
 
 	data.forEach((info) => {
-		if (info.state) {
-			winCount++
-		} else {
-			loseCount++
-		}
+		if (info.state) winCount++
+		else loseCount++
 	})
 
 	winRate = winCount / (winCount + loseCount)
@@ -76,6 +73,12 @@ function getAdvice(data: BattleStack[], self: BattleStack[]): string {
 		power -= 2
 	} else if (rankAnalyseResult.isTripleWin) {
 		advice += " Ta正在三连胜"
+		power += 2
+	} else if (rankAnalyseResult.isFirstWin) {
+		advice += " Ta正在首胜"
+		power -= 2
+	} else if (rankAnalyseResult.isFirstLose) {
+		advice += " Ta正在首败"
 		power += 2
 	} else if (rankAnalyseResult.isMoreThanThreeWin) {
 		advice += " Ta正在疯狂连胜"
@@ -97,6 +100,12 @@ function getAdvice(data: BattleStack[], self: BattleStack[]): string {
 	} else if (selfAnalyseResult.isTripleWin) {
 		advice += " 你正在三连胜"
 		power -= 2
+	} else if (selfAnalyseResult.isFirstWin) {
+		advice += " 你正在首胜"
+		power += 2
+	} else if (selfAnalyseResult.isFirstLose) {
+		advice += " 你正在首败"
+		power -= 2
 	} else if (selfAnalyseResult.isMoreThanThreeWin) {
 		advice += " 你正在疯狂连胜"
 		power -= 1
@@ -116,9 +125,8 @@ function getAdvice(data: BattleStack[], self: BattleStack[]): string {
 		advice += ` 段位与对手相同`
 	}
 
-	if (power > 0) advice += " 建议赢"
-	else if (power < 0) advice += " 建议输"
-	else advice += " 无建议"
+	if (power > 0) advice += " 建议:赢"
+	else if (power < 0) advice += " 建议:输"
 
 	return advice
 }
@@ -147,6 +155,10 @@ $Bus.on("query-rank-data-reply", ({ data, queryId }) => {
 
 		rankStack.value.setStack(data)
 	}
+})
+
+$Bus.on("recieve-battle-self", (data) => {
+	console.log(data)
 })
 
 onUnmounted(() => {

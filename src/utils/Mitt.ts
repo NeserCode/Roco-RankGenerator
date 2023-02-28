@@ -26,7 +26,8 @@ export const $Bus = Mitt<{
 	"dialog-container-open": void
 	"dialog-container-close": void
 	"update-battle": Ws_BattlePackage
-	"ensure-battle": Ws_BattleInfoPackage
+	"ensure-battle": Ws_BattlePackage
 	"query-rank-data": { id: string }
 	"query-rank-data-reply": { data: Ws_BattleInfoPackage[]; queryId: string }
+	"recieve-battle-self": string
 }>()

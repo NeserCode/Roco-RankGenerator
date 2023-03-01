@@ -133,6 +133,9 @@ export default createStore<State>({
 		ensureAddon(state) {
 			state.isAddon = true
 		},
+		cancelAddon(state) {
+			state.isAddon = false
+		},
 		ensureBattle(state) {
 			state.isEnsuredBattle = true
 		},

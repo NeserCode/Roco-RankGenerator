@@ -12,6 +12,7 @@ let PlayerList = []
 let HOST_ID = null
 let ROUND_SUM = 0
 let ROUND = 0
+let LIMIT = 0
 let RANK_STACK = new RankStack(10)
 
 Socket.on("close", (e) => {
@@ -33,6 +34,7 @@ Socket.on("connection", (socket) => {
 		} else if (JsonMessage.type === "BEFORE_START") {
 
 			ROUND_SUM = JsonMessage.roundLimit ?? 10
+			LIMIT = JsonMessage.roundLimit ?? 10
 			ROUND = 0
 			RANK_STACK.clear()
 
@@ -55,7 +57,6 @@ Socket.on("connection", (socket) => {
 						type: "START_ROUND",
 						round: JsonMessage.round,
 						timestamp: Date.now(),
-						isAddon: ROUND_SUM === 0,
 					})
 				)
 			}, JsonMessage.timeCount * 1000)
@@ -152,7 +153,7 @@ Socket.on("connection", (socket) => {
 					JSON.stringify({
 						...JsonMessage,
 						round: ROUND,
-						isAddon: ROUND_SUM === 0,
+						isAddon: ROUND >= LIMIT,
 					})
 				)
 				console.log(`[Round $${ROUND}]`)

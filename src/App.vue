@@ -11,6 +11,7 @@ ipcRenderer.on("dark-mode", () => {
 
 onMounted(() => {
 	initialDarkMode()
+	document.title = "Roco Rank - 洛克王国系别车队专用排位系统"
 })
 </script>
 

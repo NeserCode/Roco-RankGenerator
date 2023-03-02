@@ -36,12 +36,12 @@ async function createWindow() {
 	}
 
 	globalShortcut.register("CommandOrControl+E", () => {
-		if (win.isFocused() && isDevelopment) {
+		if (win.isFocused()) {
 			win.webContents.openDevTools()
 		} else win.webContents.closeDevTools()
 	})
 	globalShortcut.register("CommandOrControl+Q", () => {
-		if (win.isFocused() && isDevelopment) win.webContents.reload()
+		if (win.isFocused()) win.webContents.reload()
 	})
 	globalShortcut.register("CommandOrControl+D", () => {
 		if (win.isFocused()) win.webContents.send("dark-mode")

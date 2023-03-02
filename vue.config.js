@@ -14,6 +14,7 @@ module.exports = defineConfig({
   pluginOptions: {
     electronBuilder: {
       nodeIntegration: true,
+      customFileProtocol: "./",
       builderOptions: {
         "appId": "com.roco.rank.nesercode.china.application.beta",
         "productName": "Roco.Rank-Generator.Beta", //项目名，也是生成的安装文件名，即demo.exe
@@ -21,7 +22,7 @@ module.exports = defineConfig({
         "directories": {
           "output": "./ELECTRON_DIST" //输出文件路径
         },
-        "asar": true,
+        "asar": false,
         "nsis": {
           "oneClick": false, // 是否一键安装
           "allowElevation": true, // 允许请求提升。 如果为false，则用户必须使用提升的权限重新启动安装程序。

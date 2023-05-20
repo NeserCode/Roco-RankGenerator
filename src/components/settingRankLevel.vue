@@ -3,7 +3,9 @@ import { SettingOptionToken } from "@/tokens/settingOption"
 import { RankLimit } from "@/shared/rankLimit"
 import { inject } from "vue"
 
-const { boundValue } = inject(SettingOptionToken, {})
+const { boundValue } = inject(SettingOptionToken, {
+	boundValue: { rank: 0, level: 0, star: 0 },
+})
 
 function resetLevel() {
 	if (boundValue.rank < 4) {
@@ -37,8 +39,12 @@ const computedMax = () => {
 						<option :value="0" selected>一段</option>
 						<option :value="1">二段</option>
 						<option :value="2">三段</option>
-						<option :value="3" :disabled="boundValue.rank < 2">四段</option>
-						<option :value="4" :disabled="boundValue.rank < 4">五段</option>
+						<option :value="3" :disabled="boundValue.rank < 2">
+							四段
+						</option>
+						<option :value="4" :disabled="boundValue.rank < 4">
+							五段
+						</option>
 					</select>
 					<input
 						type="number"

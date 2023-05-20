@@ -30,7 +30,9 @@ const filteredPlayers = computed(() =>
 	query.value === ""
 		? $store.state.room.players
 		: $store.state.room.players.filter((player) => {
-				return player.nickname.toLowerCase().includes(query.value.toLowerCase())
+				return player.nickname
+					.toLowerCase()
+					.includes(query.value.toLowerCase())
 		  })
 )
 
@@ -82,7 +84,12 @@ $Bus.on("next-round-count", () => {
 				<span>⌛ 正在进行第 {{ $store.state.room.round }} 回合</span>
 			</template>
 			<template #details>
-				<Combobox v-model="selectedPlayer" by="id" as="div" class="combox-main">
+				<Combobox
+					v-model="selectedPlayer"
+					by="id"
+					as="div"
+					class="combox-main"
+				>
 					<div class="combox-input-container">
 						<ComboboxInput
 							class="combox-input"
@@ -90,7 +97,10 @@ $Bus.on("next-round-count", () => {
 							:displayValue="displayFn"
 						/>
 						<ComboboxButton class="combox-button">
-							<ChevronUpDownIcon class="combox-input-icon" aria-hidden="true" />
+							<ChevronUpDownIcon
+								class="combox-input-icon"
+								aria-hidden="true"
+							/>
 						</ComboboxButton>
 					</div>
 					<TransitionRoot
@@ -124,7 +134,9 @@ $Bus.on("next-round-count", () => {
 										class="check-icon"
 										aria-hidden="true"
 									/>
-									<span class="player-name">{{ player.nickname }}</span>
+									<span class="player-name">{{
+										player.nickname
+									}}</span>
 								</li>
 							</ComboboxOption>
 							<ComboboxOption
@@ -133,13 +145,20 @@ $Bus.on("next-round-count", () => {
 								:value="player"
 								v-slot="{ selected, active }"
 							>
-								<li :class="['combox-option-item', isActivedItem(active)]">
+								<li
+									:class="[
+										'combox-option-item',
+										isActivedItem(active),
+									]"
+								>
 									<CheckIcon
 										v-if="selected"
 										class="check-icon"
 										aria-hidden="true"
 									/>
-									<span class="player-name">{{ player.nickname }}</span>
+									<span class="player-name">{{
+										player.nickname
+									}}</span>
 								</li>
 							</ComboboxOption>
 						</ComboboxOptions>
@@ -159,7 +178,9 @@ $Bus.on("next-round-count", () => {
 				</p>
 				<p>
 					自己的选择只会影响到对手的最近胜负,
-					<span class="u" title="有内鬼，停止交易！">你的对手也是如此</span>
+					<span class="u" title="有内鬼，停止交易！"
+						>你的对手也是如此</span
+					>
 				</p>
 				<p>
 					若双方没有配对成功，即选择了错误的对手，本场比赛将不会有记录（显示为未定胜负）
@@ -174,10 +195,16 @@ $Bus.on("next-round-count", () => {
 			<template #options>
 				<rank-helper :query="selectedPlayer" />
 				<div class="options">
-					<button class="btn primary" @click="battleStateHanlder(true)">
+					<button
+						class="btn primary"
+						@click="battleStateHanlder(true)"
+					>
 						选择胜利
 					</button>
-					<button class="btn primary" @click="battleStateHanlder(false)">
+					<button
+						class="btn primary"
+						@click="battleStateHanlder(false)"
+					>
 						选择认输
 					</button>
 				</div>

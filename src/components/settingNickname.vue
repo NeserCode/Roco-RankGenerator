@@ -4,7 +4,9 @@ import { inject } from "vue"
 import { useStore } from "vuex"
 import { key } from "@/state"
 
-const { boundValue } = inject(SettingOptionToken, {})
+const { boundValue } = inject(SettingOptionToken, {
+	boundValue: { nickname: "" },
+})
 const $store = useStore(key)
 </script>
 

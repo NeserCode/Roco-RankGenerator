@@ -159,7 +159,10 @@ function noticeBeforeRound(
 	const interval = setInterval(() => {
 		if (data.timeCount > 0) {
 			data.timeCount--
-			if (data.timeCount <= getRoundInfo().roundCount && data.timeCount > 0) {
+			if (
+				data.timeCount <= getRoundInfo().roundCount &&
+				data.timeCount > 0
+			) {
 				oneWord.value = `准备匹配倒计时: ${data.timeCount} 秒`
 				messageQueue.value.push({
 					type: "BEFORE_ROUND",
@@ -193,9 +196,12 @@ const noti_test = ref<Notification>({
 	type: "NOTIFY",
 	title: "Happy Game",
 	message: [
-		"Welcome to use this software for Roco Kingdoms Rank.",
-		"Notice that this software is BETA version.",
-		"Please report any bugs to the developer by a screenshot and data in Devtool (Ctrl+E).",
+		"1.选择你的对手，并根据双方的最近胜负决定本回合自己的胜负。做好选择后请更新段位",
+		"2.若双方对于胜负有分歧,该次比赛将由对手的决定记录比分",
+		"3.自己的选择只会影响到对手的最近胜负，你的对手也是如此",
+		"4.若双方没有配对成功，即选择了错误的对手，本场比赛将不会有记录（显示为未定胜负）",
+		"5.默认每回合开始时选中的对手为空排，选择胜或者负都不会影响到玩家实际的输赢",
+		"6.对手为路人时，你的选择将变为决定<b>自己</b>的战绩，此时查询到的路人战绩不具有参考价值",
 		"Thank you for your support :)",
 	],
 	timestamp: Date.now(),
@@ -214,12 +220,21 @@ const noti_test = ref<Notification>({
 		<div class="room-container">
 			<div class="player-list">
 				<div class="top-info">
-					<span class="sum">🏃‍♂️ 玩家数 {{ $store.state.room.clientSum }}</span>
+					<span class="sum"
+						>🏃‍♂️ 玩家数 {{ $store.state.room.clientSum }}</span
+					>
 				</div>
 				<div class="list">
 					<message-dialog :text-notifaication="noti_test" />
-					<div class="item" v-for="player in players" :key="player.id">
-						<player-item :player="player" :class="[computedClass(player.id)]" />
+					<div
+						class="item"
+						v-for="player in players"
+						:key="player.id"
+					>
+						<player-item
+							:player="player"
+							:class="[computedClass(player.id)]"
+						/>
 					</div>
 				</div>
 			</div>

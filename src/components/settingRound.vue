@@ -4,7 +4,14 @@ import { inject } from "vue"
 import { useStore } from "vuex"
 import { key } from "@/state"
 
-const { boundValue } = inject(SettingOptionToken, {})
+const { boundValue } = inject(SettingOptionToken, {
+	boundValue: {
+		roundLimit: 0,
+		beforeStartCount: 0,
+		beforeRoundCount: 0,
+		roundCount: 0,
+	},
+})
 const $store = useStore(key)
 </script>
 

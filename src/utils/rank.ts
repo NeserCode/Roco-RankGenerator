@@ -68,6 +68,9 @@ export const RankAnalyse: (
 
 	if (data.length === 0) return result
 
+	result.isFirstWin = lastBattle.state
+	result.isFirstLose = !lastBattle.state
+
 	if (data.length >= 2) {
 		const last2Battle = data[data.length - 2]
 		if (last2Battle.state === lastBattle.state) {
@@ -86,6 +89,8 @@ export const RankAnalyse: (
 				result.isTripleLose = !lastBattle.state
 				result.isDoubleWin = false
 				result.isDoubleLose = false
+				result.isFirstWin = false
+				result.isFirstLose = false
 			}
 			if (data.length >= 4) {
 				const last4Battle = data[data.length - 4]
@@ -98,14 +103,14 @@ export const RankAnalyse: (
 					result.isMoreThanThreeLose = !lastBattle.state
 					result.isTripleWin = false
 					result.isTripleLose = false
+					result.isDoubleWin = false
+					result.isDoubleLose = false
+					result.isFirstWin = false
+					result.isFirstLose = false
 				}
 			}
 		}
 	}
-
-	result.isFirstWin = lastBattle.state
-	result.isFirstLose = !lastBattle.state
-
 	return result
 }
 

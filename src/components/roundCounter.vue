@@ -165,7 +165,7 @@ $Bus.on("next-round-count", () => {
 					</TransitionRoot>
 				</Combobox>
 			</template>
-			<template #info>
+			<!-- <template #info>
 				<p>
 					选择你的对手，并根据双方的最近胜负决定本回合自己的胜负。做好选择后请更新段位
 				</p>
@@ -191,7 +191,7 @@ $Bus.on("next-round-count", () => {
 				<p>
 					对手为路人时，你的选择将变为决定<b>自己</b>的战绩，此时查询到的路人战绩<b>不</b>具有参考价值
 				</p>
-			</template>
+			</template> -->
 			<template #options>
 				<rank-helper :query="selectedPlayer" />
 				<div class="options">
@@ -199,13 +199,13 @@ $Bus.on("next-round-count", () => {
 						class="btn primary"
 						@click="battleStateHanlder(true)"
 					>
-						选择胜利
+						胜利
 					</button>
 					<button
 						class="btn primary"
 						@click="battleStateHanlder(false)"
 					>
-						选择认输
+						认输
 					</button>
 				</div>
 			</template>
@@ -282,7 +282,8 @@ p:nth-child(even) {
 
 .combox-options {
 	@apply absolute w-64 mt-1 max-h-48 py-1 overflow-auto border-2
-	border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900;
+	border-gray-200 dark:border-gray-600 bg-gray-50 dark:bg-gray-900
+	z-10;
 }
 
 .combox-option-item {

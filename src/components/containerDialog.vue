@@ -95,7 +95,7 @@ $Bus.on("dialog-container-close", () => {
 	text-sm text-gray-400 select-none;
 }
 .dialog-details .scrollable {
-	@apply mt-1 px-1.5 max-h-40 border-2
+	@apply mt-1 px-1.5 max-h-40
 	border-gray-200 dark:border-gray-700 overflow-y-auto;
 }
 .dialog-title {

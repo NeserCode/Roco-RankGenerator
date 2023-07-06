@@ -202,7 +202,6 @@ const noti_test = ref<Notification>({
 		"4.若双方没有配对成功，即选择了错误的对手，本场比赛将不会有记录（显示为未定胜负）",
 		"5.默认每回合开始时选中的对手为空排，选择胜或者负都不会影响到玩家实际的输赢",
 		"6.对手为路人时，你的选择将变为决定自己的战绩，此时查询到的路人战绩不具有参考价值",
-		"Thank you for your support :)",
 	],
 	timestamp: Date.now(),
 	options: [

@@ -58,9 +58,9 @@ function getAdvice(data: BattleStack[], self: BattleStack[]): string {
 		else loseCount++
 	})
 
-	winRate = winCount / (winCount + loseCount)
+	winRate = (winCount / (winCount + loseCount)) * 100
 
-	advice = `对手持有 ${winRate.toFixed(2)}% 胜率`
+	advice = `对手胜率 ${winRate.toFixed(2)}% `
 
 	if (rankAnalyseResult.isDoubleWin) {
 		advice += " Ta正在二连胜"
@@ -145,13 +145,14 @@ $Bus.on("query-rank-data-reply", ({ data, queryId }) => {
 
 		loadingTimer[0] = setTimeout(() => {
 			loadingState.value = false
-		}, 800)
+		}, 200)
 		loadingTimer[1] = setTimeout(() => {
 			adviceLoadingState.value = false
 			if (query.value.id === "null")
 				adviceText.value = "空排 还想要什么建议....随便选一个"
-			else adviceText.value = getAdvice(battleInfo.value, selfBattleInfo())
-		}, 1800)
+			else
+				adviceText.value = getAdvice(battleInfo.value, selfBattleInfo())
+		}, 500)
 
 		rankStack.value.setStack(data)
 	}
@@ -185,7 +186,9 @@ onUnmounted(() => {
 					>
 						{{ info.state ? "胜" : "负" }}
 					</span>
-					<span class="info-item" v-if="battleInfo.length === 0">暂无</span>
+					<span class="info-item" v-if="battleInfo.length === 0"
+						>暂无</span
+					>
 				</span>
 			</span>
 			<span>
@@ -196,7 +199,10 @@ onUnmounted(() => {
 			</span>
 			<span class="advice">
 				<span class="prefix">建议</span>
-				<ArrowPathIcon class="advice-loading-icon" v-if="adviceLoadingState" />
+				<ArrowPathIcon
+					class="advice-loading-icon"
+					v-if="adviceLoadingState"
+				/>
 				<span class="rank-simple">
 					<span>{{ adviceText }}</span>
 				</span>
